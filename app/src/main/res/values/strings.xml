@@ -2,26 +2,100 @@
     <string name="app_name">Steady</string>
     <string name="notification_channel_name">General notifications</string>
     <string name="notification_channel_description">Product updates and important messages</string>
+
     <string name="sign_in_title">Welcome to Steady</string>
     <string name="sign_in_subtitle">Sign in with Google to continue.</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="continue_as_demo">Continue (Demo)</string>
     <string name="google_sign_in_not_configured">Google Sign-In is not configured yet. Add google-services.json and a web client ID, or use the demo option below on debug builds.</string>
+
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get started</string>
+    <string name="onboarding_welcome_title">A calm companion for GLP-1</string>
+    <string name="onboarding_welcome_body">Track doses, meals and progress in one gentle, private place.</string>
+    <string name="onboarding_scan_title">Scan your meals</string>
+    <string name="onboarding_scan_body">Point your camera at a plate and Steady estimates calories, protein, fiber and carbs.</string>
+    <string name="onboarding_progress_title">See your journey</string>
+    <string name="onboarding_progress_body">Weight, doses and symptoms come together into a story you and your doctor can read.</string>
+
     <string name="tab_home">Home</string>
-    <string name="tab_explore">Explore</string>
-    <string name="tab_settings">Settings</string>
-    <string name="home_title">Steady is ready</string>
-    <string name="home_description">Use this screen as the starting point for your first product feature.</string>
-    <string name="explore_title">Explore</string>
-    <string name="explore_description">This placeholder demonstrates preserved bottom navigation state.</string>
-    <string name="settings_title">Settings</string>
+    <string name="tab_scan">Scan</string>
+    <string name="tab_insights">Insights</string>
+    <string name="tab_community">Community</string>
+    <string name="tab_profile">Profile</string>
+
+    <string name="home_title">Today</string>
+    <string name="home_scan_meal">Scan a meal</string>
+    <string name="home_next_dose_label">Next dose</string>
+    <string name="home_no_data_placeholder">No data yet</string>
+    <string name="home_today_totals">Today\'s totals</string>
+    <string name="macro_calories">Calories</string>
+    <string name="macro_protein">Protein</string>
+    <string name="macro_fiber">Fiber</string>
+    <string name="macro_carbs">Carbs</string>
+    <string name="home_log_a_moment">Log a moment</string>
+    <string name="home_log_dose_action">Log your dose</string>
+    <string name="home_log_side_effect_action">Log side effects</string>
+
+    <string name="scan_title">Scan a meal</string>
+    <string name="scan_coming_soon">Camera-based meal scanning is coming soon.</string>
+
+    <string name="meal_detected_title">Meal detected</string>
+    <string name="meal_detected_coming_soon">Scan results will appear here for review before saving.</string>
+
+    <string name="insights_title">Insights</string>
+    <string name="insights_coming_soon">Weekly trends for protein, fiber, water and dose adherence are coming soon.</string>
+    <string name="nav_journey">Journey</string>
+
+    <string name="journey_title">Journey</string>
+    <string name="journey_locked_headline">Unlock your Journey</string>
+    <string name="journey_locked_body">See your full progress history and trends with Premium.</string>
+    <string name="journey_unlock_cta">Unlock with Premium</string>
+
+    <string name="community_title">Community</string>
+    <string name="community_coming_soon">A moderated community feed is coming soon.</string>
+
+    <string name="log_dose_title">Log your dose</string>
+    <string name="log_dose_coming_soon">Dose logging is coming soon.</string>
+
+    <string name="log_side_effect_title">Log side effects</string>
+    <string name="side_effect_severe_warning">Severe symptoms can be serious. Contact your prescriber or seek urgent care now.</string>
+    <string name="log_side_effect_coming_soon">Symptom logging is coming soon.</string>
+
+    <string name="medication_dose_title">Medication &amp; dose</string>
+    <string name="medication_dose_coming_soon">Medication and dose settings are coming soon.</string>
+
+    <string name="daily_goals_title">Daily goals</string>
+    <string name="daily_goals_coming_soon">Protein, fiber and water goals are coming soon.</string>
+
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_coming_soon">Your notification inbox is coming soon.</string>
+
+    <string name="account_title">Account</string>
+    <string name="account_coming_soon">Account details and data deletion are coming soon.</string>
+
+    <string name="premium_paywall_title">Steady Premium</string>
+    <string name="premium_paywall_coming_soon">Subscription plans are coming soon.</string>
+
+    <string name="help_title">Help</string>
+    <string name="help_faq_scan_question">How accurate is meal scanning?</string>
+    <string name="help_faq_scan_answer">Steady gives an estimate to help you track trends, not an exact lab measurement.</string>
+    <string name="help_faq_data_question">Is my health data private?</string>
+    <string name="help_faq_data_answer">Your logs stay on your device unless you choose to back them up.</string>
+    <string name="help_faq_medical_question">Does Steady replace my doctor?</string>
+    <string name="help_faq_medical_answer">No. Steady is informational only and never provides a diagnosis.</string>
+
+    <string name="profile_title">Profile</string>
+    <string name="nav_medication_dose">Medication &amp; dose</string>
+    <string name="nav_daily_goals">Daily goals</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_account">Account</string>
+    <string name="nav_help">Help</string>
     <string name="theme_title">Theme</string>
     <string name="theme_system">Use system theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="selected_format">%1$s (selected)</string>
     <string name="enable_notifications">Enable notifications</string>
     <string name="logout_action">Sign out</string>
-    <string name="firebase_connected">Firebase configuration detected.</string>
-    <string name="firebase_not_connected">Firebase is optional and is not configured yet.</string>
 </resources>

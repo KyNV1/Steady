@@ -2,26 +2,100 @@
     <string name="app_name">Steady</string>
     <string name="notification_channel_name">Thông báo chung</string>
     <string name="notification_channel_description">Cập nhật sản phẩm và các thông báo quan trọng</string>
+
     <string name="sign_in_title">Chào mừng đến với Steady</string>
     <string name="sign_in_subtitle">Đăng nhập bằng Google để tiếp tục.</string>
     <string name="sign_in_with_google">Đăng nhập bằng Google</string>
     <string name="continue_as_demo">Tiếp tục (Demo)</string>
     <string name="google_sign_in_not_configured">Đăng nhập Google chưa được cấu hình. Thêm google-services.json và web client ID, hoặc dùng tùy chọn demo bên dưới trên bản debug.</string>
+
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_next">Tiếp theo</string>
+    <string name="onboarding_get_started">Bắt đầu</string>
+    <string name="onboarding_welcome_title">Người bạn đồng hành GLP-1</string>
+    <string name="onboarding_welcome_body">Theo dõi liều dùng, bữa ăn và tiến trình ở một nơi riêng tư, nhẹ nhàng.</string>
+    <string name="onboarding_scan_title">Quét bữa ăn của bạn</string>
+    <string name="onboarding_scan_body">Hướng camera vào món ăn, Steady ước tính calo, đạm, chất xơ và tinh bột.</string>
+    <string name="onboarding_progress_title">Xem hành trình của bạn</string>
+    <string name="onboarding_progress_body">Cân nặng, liều dùng và triệu chứng hợp thành câu chuyện bạn và bác sĩ có thể theo dõi.</string>
+
     <string name="tab_home">Trang chủ</string>
-    <string name="tab_explore">Khám phá</string>
-    <string name="tab_settings">Cài đặt</string>
-    <string name="home_title">Steady đã sẵn sàng</string>
-    <string name="home_description">Dùng màn hình này làm điểm bắt đầu cho tính năng sản phẩm đầu tiên.</string>
-    <string name="explore_title">Khám phá</string>
-    <string name="explore_description">Màn hình mẫu minh họa trạng thái bottom navigation được giữ lại.</string>
-    <string name="settings_title">Cài đặt</string>
+    <string name="tab_scan">Quét</string>
+    <string name="tab_insights">Thống kê</string>
+    <string name="tab_community">Cộng đồng</string>
+    <string name="tab_profile">Hồ sơ</string>
+
+    <string name="home_title">Hôm nay</string>
+    <string name="home_scan_meal">Quét bữa ăn</string>
+    <string name="home_next_dose_label">Liều tiếp theo</string>
+    <string name="home_no_data_placeholder">Chưa có dữ liệu</string>
+    <string name="home_today_totals">Tổng hôm nay</string>
+    <string name="macro_calories">Calo</string>
+    <string name="macro_protein">Đạm</string>
+    <string name="macro_fiber">Chất xơ</string>
+    <string name="macro_carbs">Tinh bột</string>
+    <string name="home_log_a_moment">Ghi lại</string>
+    <string name="home_log_dose_action">Ghi liều dùng</string>
+    <string name="home_log_side_effect_action">Ghi tác dụng phụ</string>
+
+    <string name="scan_title">Quét bữa ăn</string>
+    <string name="scan_coming_soon">Tính năng quét bữa ăn bằng camera sắp ra mắt.</string>
+
+    <string name="meal_detected_title">Đã nhận diện món ăn</string>
+    <string name="meal_detected_coming_soon">Kết quả quét sẽ hiện ở đây để bạn xác nhận trước khi lưu.</string>
+
+    <string name="insights_title">Thống kê</string>
+    <string name="insights_coming_soon">Xu hướng đạm, chất xơ, nước và tuân thủ liều theo tuần sắp ra mắt.</string>
+    <string name="nav_journey">Hành trình</string>
+
+    <string name="journey_title">Hành trình</string>
+    <string name="journey_locked_headline">Mở khóa Hành trình</string>
+    <string name="journey_locked_body">Xem toàn bộ lịch sử và xu hướng tiến trình với Premium.</string>
+    <string name="journey_unlock_cta">Mở khóa với Premium</string>
+
+    <string name="community_title">Cộng đồng</string>
+    <string name="community_coming_soon">Bảng tin cộng đồng có kiểm duyệt sắp ra mắt.</string>
+
+    <string name="log_dose_title">Ghi liều dùng</string>
+    <string name="log_dose_coming_soon">Tính năng ghi liều dùng sắp ra mắt.</string>
+
+    <string name="log_side_effect_title">Ghi tác dụng phụ</string>
+    <string name="side_effect_severe_warning">Triệu chứng nặng có thể nghiêm trọng. Liên hệ bác sĩ kê đơn hoặc đến cơ sở y tế ngay.</string>
+    <string name="log_side_effect_coming_soon">Tính năng ghi tác dụng phụ sắp ra mắt.</string>
+
+    <string name="medication_dose_title">Thuốc &amp; liều dùng</string>
+    <string name="medication_dose_coming_soon">Cài đặt thuốc và liều dùng sắp ra mắt.</string>
+
+    <string name="daily_goals_title">Mục tiêu hằng ngày</string>
+    <string name="daily_goals_coming_soon">Mục tiêu đạm, chất xơ và nước sắp ra mắt.</string>
+
+    <string name="notifications_title">Thông báo</string>
+    <string name="notifications_coming_soon">Hộp thư thông báo sắp ra mắt.</string>
+
+    <string name="account_title">Tài khoản</string>
+    <string name="account_coming_soon">Thông tin tài khoản và xóa dữ liệu sắp ra mắt.</string>
+
+    <string name="premium_paywall_title">Steady Premium</string>
+    <string name="premium_paywall_coming_soon">Các gói đăng ký sắp ra mắt.</string>
+
+    <string name="help_title">Trợ giúp</string>
+    <string name="help_faq_scan_question">Quét bữa ăn chính xác đến đâu?</string>
+    <string name="help_faq_scan_answer">Steady đưa ra ước tính để theo dõi xu hướng, không phải số đo phòng thí nghiệm chính xác.</string>
+    <string name="help_faq_data_question">Dữ liệu sức khỏe của tôi có riêng tư không?</string>
+    <string name="help_faq_data_answer">Nhật ký của bạn lưu trên thiết bị trừ khi bạn chọn sao lưu.</string>
+    <string name="help_faq_medical_question">Steady có thay thế bác sĩ không?</string>
+    <string name="help_faq_medical_answer">Không. Steady chỉ mang tính tham khảo và không đưa ra chẩn đoán.</string>
+
+    <string name="profile_title">Hồ sơ</string>
+    <string name="nav_medication_dose">Thuốc &amp; liều dùng</string>
+    <string name="nav_daily_goals">Mục tiêu hằng ngày</string>
+    <string name="nav_notifications">Thông báo</string>
+    <string name="nav_account">Tài khoản</string>
+    <string name="nav_help">Trợ giúp</string>
     <string name="theme_title">Giao diện</string>
     <string name="theme_system">Theo hệ thống</string>
     <string name="theme_light">Sáng</string>
     <string name="theme_dark">Tối</string>
-    <string name="selected_format">%1$s (đang chọn)</string>
     <string name="enable_notifications">Bật thông báo</string>
     <string name="logout_action">Đăng xuất</string>
-    <string name="firebase_connected">Đã phát hiện cấu hình Firebase.</string>
-    <string name="firebase_not_connected">Firebase là tùy chọn và hiện chưa được cấu hình.</string>
 </resources>
