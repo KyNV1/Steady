@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Steady</string>
+    <string name="notification_channel_name">General notifications</string>
+    <string name="notification_channel_description">Product updates and important messages</string>
+    <string name="sign_in_title">Welcome to Steady</string>
+    <string name="sign_in_subtitle">Sign in with Google to continue.</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="continue_as_demo">Continue (Demo)</string>
+    <string name="google_sign_in_not_configured">Google Sign-In is not configured yet. Add google-services.json and a web client ID, or use the demo option below on debug builds.</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_explore">Explore</string>
+    <string name="tab_settings">Settings</string>
+    <string name="home_title">Steady is ready</string>
+    <string name="home_description">Use this screen as the starting point for your first product feature.</string>
+    <string name="explore_title">Explore</string>
+    <string name="explore_description">This placeholder demonstrates preserved bottom navigation state.</string>
+    <string name="settings_title">Settings</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_system">Use system theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="selected_format">%1$s (selected)</string>
+    <string name="enable_notifications">Enable notifications</string>
+    <string name="logout_action">Sign out</string>
+    <string name="firebase_connected">Firebase configuration detected.</string>
+    <string name="firebase_not_connected">Firebase is optional and is not configured yet.</string>
+</resources>

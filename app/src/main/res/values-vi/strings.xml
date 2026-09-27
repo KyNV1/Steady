@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Steady</string>
+    <string name="notification_channel_name">Thông báo chung</string>
+    <string name="notification_channel_description">Cập nhật sản phẩm và các thông báo quan trọng</string>
+    <string name="sign_in_title">Chào mừng đến với Steady</string>
+    <string name="sign_in_subtitle">Đăng nhập bằng Google để tiếp tục.</string>
+    <string name="sign_in_with_google">Đăng nhập bằng Google</string>
+    <string name="continue_as_demo">Tiếp tục (Demo)</string>
+    <string name="google_sign_in_not_configured">Đăng nhập Google chưa được cấu hình. Thêm google-services.json và web client ID, hoặc dùng tùy chọn demo bên dưới trên bản debug.</string>
+    <string name="tab_home">Trang chủ</string>
+    <string name="tab_explore">Khám phá</string>
+    <string name="tab_settings">Cài đặt</string>
+    <string name="home_title">Steady đã sẵn sàng</string>
+    <string name="home_description">Dùng màn hình này làm điểm bắt đầu cho tính năng sản phẩm đầu tiên.</string>
+    <string name="explore_title">Khám phá</string>
+    <string name="explore_description">Màn hình mẫu minh họa trạng thái bottom navigation được giữ lại.</string>
+    <string name="settings_title">Cài đặt</string>
+    <string name="theme_title">Giao diện</string>
+    <string name="theme_system">Theo hệ thống</string>
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
+    <string name="selected_format">%1$s (đang chọn)</string>
+    <string name="enable_notifications">Bật thông báo</string>
+    <string name="logout_action">Đăng xuất</string>
+    <string name="firebase_connected">Đã phát hiện cấu hình Firebase.</string>
+    <string name="firebase_not_connected">Firebase là tùy chọn và hiện chưa được cấu hình.</string>
+</resources>
