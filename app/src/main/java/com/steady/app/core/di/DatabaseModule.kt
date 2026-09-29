@@ -11,6 +11,8 @@ import com.steady.app.core.storage.AppDatabase
 import com.steady.app.core.storage.AppPreferences
 import com.steady.app.core.storage.AppPreferencesSerializer
 import com.steady.app.core.utils.Constants
+import com.steady.app.data.local.dao.DailyGoalsDao
+import com.steady.app.data.local.dao.MedicationProfileDao
 import com.steady.app.data.local.dao.UserDao
 import dagger.Binds
 import dagger.Module
@@ -54,5 +56,12 @@ abstract class DatabaseModule {
 
         @Provides
         fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
+
+        @Provides
+        fun provideMedicationProfileDao(database: AppDatabase): MedicationProfileDao =
+            database.medicationProfileDao()
+
+        @Provides
+        fun provideDailyGoalsDao(database: AppDatabase): DailyGoalsDao = database.dailyGoalsDao()
     }
 }

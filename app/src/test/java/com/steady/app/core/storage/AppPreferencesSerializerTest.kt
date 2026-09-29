@@ -15,6 +15,7 @@ class AppPreferencesSerializerTest {
             userId = "42",
             fcmToken = "fcm",
             themeMode = ThemeMode.DARK,
+            onboardingCompleted = true,
         )
         val output = ByteArrayOutputStream()
 
@@ -22,5 +23,15 @@ class AppPreferencesSerializerTest {
         val actual = AppPreferencesSerializer.readFrom(ByteArrayInputStream(output.toByteArray()))
 
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `onboardingCompleted defaults to false when absent`() = runTest {
+        val output = ByteArrayOutputStream()
+        AppPreferencesSerializer.writeTo(AppPreferences(userId = "42"), output)
+
+        val actual = AppPreferencesSerializer.readFrom(ByteArrayInputStream(output.toByteArray()))
+
+        assertEquals(false, actual.onboardingCompleted)
     }
 }

@@ -25,6 +25,7 @@ class AppDataStore @Inject constructor(
     }
     val isAuthenticated: Flow<Boolean> = preferences.map { it.accessToken.isNotBlank() }
     val themeMode: Flow<ThemeMode> = preferences.map { it.themeMode }
+    val onboardingCompleted: Flow<Boolean> = preferences.map { it.onboardingCompleted }
 
     init {
         applicationScope.launch {
@@ -52,5 +53,9 @@ class AppDataStore @Inject constructor(
 
     suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.updateData { it.copy(themeMode = mode) }
+    }
+
+    suspend fun setOnboardingCompleted() {
+        dataStore.updateData { it.copy(onboardingCompleted = true) }
     }
 }

@@ -15,16 +15,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.navDeepLink
 import com.steady.app.feature.account.AccountScreen
+import com.steady.app.feature.auth.signin.PostAuthDestination
 import com.steady.app.feature.auth.signin.SignInScreen
 import com.steady.app.feature.community.CommunityScreen
 import com.steady.app.feature.dose.LogDoseScreen
 import com.steady.app.feature.goals.DailyGoalsScreen
+import com.steady.app.feature.goals.GoalsSetupScreen
 import com.steady.app.feature.help.HelpScreen
 import com.steady.app.feature.home.HomeScreen
 import com.steady.app.feature.insights.InsightsScreen
 import com.steady.app.feature.journey.JourneyScreen
 import com.steady.app.feature.mealresult.MealDetectedScreen
 import com.steady.app.feature.medication.MedicationDoseScreen
+import com.steady.app.feature.medication.MedicationSetupScreen
 import com.steady.app.feature.notifications.NotificationsScreen
 import com.steady.app.feature.onboarding.OnboardingScreen
 import com.steady.app.feature.profile.ProfileScreen
@@ -65,18 +68,34 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         ) {
             composable<SplashRoute> {
                 SplashScreen(onDestination = { destination ->
-                    val route = if (destination == SplashDestination.HOME) AuthGraphRoute else OnboardingRoute
+                    val route = when (destination) {
+                        SplashDestination.ONBOARDING -> OnboardingRoute
+                        SplashDestination.SIGN_IN -> SignInRoute
+                        SplashDestination.PROFILE_SETUP -> MedicationSetupRoute
+                        SplashDestination.HOME -> AuthGraphRoute
+                    }
                     navController.navigate(route) { popUpTo<SplashRoute> { inclusive = true } }
                 })
             }
             composable<OnboardingRoute> {
-                OnboardingScreen(onFinished = {
-                    navController.navigate(SignInRoute) { popUpTo<OnboardingRoute> { inclusive = true } }
-                })
+                val goToSignIn = { navController.navigate(SignInRoute) }
+                OnboardingScreen(onFinished = goToSignIn, onSignIn = goToSignIn)
             }
             composable<SignInRoute> {
-                SignInScreen(onAuthenticated = {
-                    navController.navigate(AuthGraphRoute) { popUpTo<SignInRoute> { inclusive = true } }
+                SignInScreen(
+                    onAuthenticated = { destination ->
+                        val route = if (destination == PostAuthDestination.HOME) AuthGraphRoute else MedicationSetupRoute
+                        navController.navigate(route) { popUpTo(navController.graph.id) { inclusive = true } }
+                    },
+                    onBack = navController::popBackStack,
+                )
+            }
+            composable<MedicationSetupRoute> {
+                MedicationSetupScreen(onContinue = { navController.navigate(GoalsSetupRoute) })
+            }
+            composable<GoalsSetupRoute> {
+                GoalsSetupScreen(onFinished = {
+                    navController.navigate(AuthGraphRoute) { popUpTo(navController.graph.id) { inclusive = true } }
                 })
             }
 

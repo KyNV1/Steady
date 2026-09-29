@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.hilt)
@@ -12,6 +14,16 @@ if (hasGoogleServices) {
     apply(plugin = "com.google.gms.google-services")
     apply(plugin = "com.google.firebase.crashlytics")
 }
+
+// Optional local override so a developer with a real Firebase project can enable Google Sign-In
+// without a code change: add `GOOGLE_WEB_CLIENT_ID=...` to the gitignored local.properties.
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+val googleWebClientId: String = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID", "")
 
 android {
     namespace = "com.steady.app"
@@ -32,8 +44,9 @@ android {
         buildConfigField("String", "BASE_URL", "\"https://example.com/api/\"")
         buildConfigField("Boolean", "FIREBASE_CONFIGURED", hasGoogleServices.toString())
         // OAuth web client ID for Google Sign-In (Firebase console > Authentication > Sign-in method
-        // > Google > Web SDK configuration). Empty until a real google-services.json is added.
-        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"\"")
+        // > Google > Web SDK configuration). Set GOOGLE_WEB_CLIENT_ID in local.properties once a
+        // real Firebase project exists; empty by default so a fresh clone still builds.
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
     }
 
     buildTypes {
@@ -141,6 +154,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.room.testing)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

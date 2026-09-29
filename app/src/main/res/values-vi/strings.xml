@@ -3,21 +3,37 @@
     <string name="notification_channel_name">Thông báo chung</string>
     <string name="notification_channel_description">Cập nhật sản phẩm và các thông báo quan trọng</string>
 
-    <string name="sign_in_title">Chào mừng đến với Steady</string>
-    <string name="sign_in_subtitle">Đăng nhập bằng Google để tiếp tục.</string>
+    <string name="sign_in_title">Đăng nhập</string>
+    <string name="sign_in_subtitle">Bảo mật dữ liệu của bạn bằng tài khoản Google — không cần nhớ mật khẩu.</string>
     <string name="sign_in_with_google">Đăng nhập bằng Google</string>
     <string name="continue_as_demo">Tiếp tục (Demo)</string>
     <string name="google_sign_in_not_configured">Đăng nhập Google chưa được cấu hình. Thêm google-services.json và web client ID, hoặc dùng tùy chọn demo bên dưới trên bản debug.</string>
+    <string name="sign_in_cancel">Hủy</string>
+    <string name="sign_in_cancelled">Đã hủy đăng nhập.</string>
+    <string name="sign_in_terms_notice">Khi tiếp tục, bạn đồng ý với Điều khoản và Chính sách quyền riêng tư của Steady.</string>
 
     <string name="onboarding_skip">Bỏ qua</string>
     <string name="onboarding_next">Tiếp theo</string>
     <string name="onboarding_get_started">Bắt đầu</string>
-    <string name="onboarding_welcome_title">Người bạn đồng hành GLP-1</string>
-    <string name="onboarding_welcome_body">Theo dõi liều dùng, bữa ăn và tiến trình ở một nơi riêng tư, nhẹ nhàng.</string>
-    <string name="onboarding_scan_title">Quét bữa ăn của bạn</string>
-    <string name="onboarding_scan_body">Hướng camera vào món ăn, Steady ước tính calo, đạm, chất xơ và tinh bột.</string>
-    <string name="onboarding_progress_title">Xem hành trình của bạn</string>
-    <string name="onboarding_progress_body">Cân nặng, liều dùng và triệu chứng hợp thành câu chuyện bạn và bác sĩ có thể theo dõi.</string>
+    <string name="onboarding_welcome_title">Người bạn đồng hành GLP-1 của bạn</string>
+    <string name="onboarding_welcome_body">Theo dõi bữa ăn, liều dùng và tiến trình — tất cả xoay quanh hành trình GLP-1 của bạn, không phải một chế độ ăn kiêng chung chung.</string>
+    <string name="onboarding_scan_title">Quét bữa ăn chỉ trong vài giây</string>
+    <string name="onboarding_scan_body">Chụp ảnh và để AI ước tính calo, đạm, chất xơ — không cần tìm kiếm hay ghi chép thủ công.</string>
+    <string name="onboarding_progress_title">Xem tiến trình của bạn tích lũy</string>
+    <string name="onboarding_progress_body">Chuỗi ngày liên tục, xu hướng cân nặng và toàn bộ hành trình giảm cân — tất cả ở một nơi, bất cứ khi nào bạn muốn nhìn lại.</string>
+    <string name="onboarding_hero_journal_subtitle">Hôm nay, Tuần 4</string>
+    <string name="onboarding_hero_water_badge">Mục tiêu</string>
+    <string name="onboarding_hero_target_badge">Tốt</string>
+    <string name="onboarding_have_account">Bạn đã có tài khoản?</string>
+    <string name="sign_in_action">Đăng nhập</string>
+    <string name="onboarding_hero_journal_title">Nhật ký Steady</string>
+    <string name="onboarding_hero_active">Đang hoạt động</string>
+    <string name="onboarding_hero_next_dose">Liều tiếp theo</string>
+    <string name="onboarding_hero_scan_tag">Đạm · Chất xơ · Tinh bột</string>
+    <string name="onboarding_hero_trend">Xu hướng 12 tuần</string>
+    <string name="onboarding_hero_streak_label">ngày liên tục</string>
+    <string name="onboarding_hero_since_start">so với ban đầu</string>
+    <string name="onboarding_hero_target_label">Mục tiêu</string>
 
     <string name="tab_home">Trang chủ</string>
     <string name="tab_scan">Quét</string>
@@ -64,10 +80,29 @@
     <string name="log_side_effect_coming_soon">Tính năng ghi tác dụng phụ sắp ra mắt.</string>
 
     <string name="medication_dose_title">Thuốc &amp; liều dùng</string>
-    <string name="medication_dose_coming_soon">Cài đặt thuốc và liều dùng sắp ra mắt.</string>
+    <string name="medication_dose_how_taken">Bạn dùng thuốc theo cách nào?</string>
+    <string name="medication_dose_route_injection">Tiêm</string>
+    <string name="medication_dose_route_oral">Viên uống</string>
+    <string name="medication_dose_route_hint">Chọn Viên uống sẽ ẩn bước chọn vị trí tiêm trong Ghi liều dùng.</string>
+    <string name="medication_dose_name_label">Loại thuốc</string>
+    <string name="medication_dose_amount_label">Liều hiện tại</string>
+    <string name="medication_dose_frequency_label">Tần suất</string>
+    <string name="medication_dose_frequency_weekly">Hàng tuần</string>
+    <string name="medication_dose_frequency_daily">Hàng ngày</string>
+    <string name="medication_dose_tip">Cập nhật liều dùng sẽ tự động điều chỉnh mục tiêu dinh dưỡng và nhắc theo dõi của bạn.</string>
+    <string name="medication_dose_save">Lưu</string>
+    <string name="medication_setup_continue">Tiếp tục</string>
 
     <string name="daily_goals_title">Mục tiêu hằng ngày</string>
-    <string name="daily_goals_coming_soon">Mục tiêu đạm, chất xơ và nước sắp ra mắt.</string>
+    <string name="daily_goals_subtitle">Đặt mục tiêu hằng ngày của riêng bạn. Nhu cầu của mỗi người khi dùng GLP-1 là khác nhau — hãy trao đổi với đội ngũ chăm sóc nếu bạn không chắc chắn.</string>
+    <string name="daily_goals_fiber_label">Chất xơ</string>
+    <string name="daily_goals_protein_label">Đạm</string>
+    <string name="daily_goals_water_label">Nước</string>
+    <string name="daily_goals_fiber_caption">Hỗ trợ tiêu hóa &amp; giảm đầy bụng</string>
+    <string name="daily_goals_protein_caption">Duy trì khối cơ nạc trong quá trình giảm cân</string>
+    <string name="daily_goals_water_caption">Quan trọng cho việc bù nước và kiểm soát tác dụng phụ của thuốc</string>
+    <string name="daily_goals_reset_defaults">Đặt lại về mặc định khuyến nghị</string>
+    <string name="daily_goals_save">Lưu</string>
 
     <string name="notifications_title">Thông báo</string>
     <string name="notifications_coming_soon">Hộp thư thông báo sắp ra mắt.</string>

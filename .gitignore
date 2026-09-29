@@ -113,3 +113,6 @@ claudekit-engineer/
 
 # repomix local config (not committed)
 .repomixignore
+
+# Codex CLI local config (may contain API keys/tokens)
+.codex/

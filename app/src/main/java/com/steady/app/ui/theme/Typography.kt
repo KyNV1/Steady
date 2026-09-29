@@ -1,17 +1,26 @@
 package com.steady.app.ui.theme
 
+import androidx.compose.ui.text.font.Font
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.steady.app.R
 
-// Stitch specifies Fraunces (display) + Work Sans (body), both OFL fonts. Bundling the actual
-// font files needs a verified source (Google Fonts provider certs or exact static-instance file
-// paths) this session can't safely fetch/verify, so display/body fall back to the closest system
-// families for now; swap FrauncesFamily/WorkSansFamily to the real FontFamily once added.
-val FrauncesFamily = FontFamily.Serif
-val WorkSansFamily = FontFamily.SansSerif
+val FrauncesFamily = FontFamily(
+    Font(R.font.fraunces_variable, FontWeight.Normal),
+    Font(R.font.fraunces_variable, FontWeight.Medium),
+    Font(R.font.fraunces_variable, FontWeight.SemiBold),
+    Font(R.font.fraunces_variable, FontWeight.Bold),
+)
+
+val WorkSansFamily = FontFamily(
+    Font(R.font.work_sans_variable, FontWeight.Normal),
+    Font(R.font.work_sans_variable, FontWeight.Medium),
+    Font(R.font.work_sans_variable, FontWeight.SemiBold),
+    Font(R.font.work_sans_variable, FontWeight.Bold),
+)
 
 val AppTypography = Typography(
     displayLarge = TextStyle(

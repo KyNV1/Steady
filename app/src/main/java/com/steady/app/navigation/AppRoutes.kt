@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable data object SplashRoute
 @Serializable data object OnboardingRoute
 @Serializable data object SignInRoute
+@Serializable data object MedicationSetupRoute
+@Serializable data object GoalsSetupRoute
 
 @Serializable data object AuthGraphRoute
 

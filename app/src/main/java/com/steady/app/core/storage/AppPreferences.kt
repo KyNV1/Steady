@@ -9,6 +9,7 @@ data class AppPreferences(
     val userId: String = "",
     val fcmToken: String = "",
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val onboardingCompleted: Boolean = false,
 )
 
 @Serializable

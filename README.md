@@ -16,7 +16,7 @@ Starter project Android production-ready dùng Kotlin, Jetpack Compose, Clean Ar
 ./gradlew testDebugUnitTest
 ```
 
-Debug build dùng fake authentication để app chạy ngay cả khi chưa có Firebase. Nhập email hợp lệ và mật khẩu từ 6 ký tự. Release build luôn dùng Firebase Auth và sẽ trả lỗi có hướng dẫn nếu chưa cấu hình.
+Debug build dùng fake authentication để app chạy ngay cả khi chưa có Firebase: bấm "Continue (Demo)" trên màn hình đăng nhập để vào bằng tài khoản demo, không cần nhập email/mật khẩu. Release build luôn dùng Firebase Auth (Google Sign-In qua Credential Manager) và sẽ trả lỗi có hướng dẫn nếu chưa cấu hình `google-services.json`/`GOOGLE_WEB_CLIENT_ID`.
 
 ## Kiến trúc
 

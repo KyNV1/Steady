@@ -3,21 +3,37 @@
     <string name="notification_channel_name">General notifications</string>
     <string name="notification_channel_description">Product updates and important messages</string>
 
-    <string name="sign_in_title">Welcome to Steady</string>
-    <string name="sign_in_subtitle">Sign in with Google to continue.</string>
+    <string name="sign_in_title">Sign in</string>
+    <string name="sign_in_subtitle">Secure your data with your Google account — no password to remember.</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="continue_as_demo">Continue (Demo)</string>
     <string name="google_sign_in_not_configured">Google Sign-In is not configured yet. Add google-services.json and a web client ID, or use the demo option below on debug builds.</string>
+    <string name="sign_in_cancel">Cancel</string>
+    <string name="sign_in_cancelled">Sign-in was cancelled.</string>
+    <string name="sign_in_terms_notice">By continuing, you agree to Steady\'s Terms and Privacy Policy.</string>
 
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_next">Next</string>
     <string name="onboarding_get_started">Get started</string>
-    <string name="onboarding_welcome_title">A calm companion for GLP-1</string>
-    <string name="onboarding_welcome_body">Track doses, meals and progress in one gentle, private place.</string>
-    <string name="onboarding_scan_title">Scan your meals</string>
-    <string name="onboarding_scan_body">Point your camera at a plate and Steady estimates calories, protein, fiber and carbs.</string>
-    <string name="onboarding_progress_title">See your journey</string>
-    <string name="onboarding_progress_body">Weight, doses and symptoms come together into a story you and your doctor can read.</string>
+    <string name="onboarding_welcome_title">Your steady GLP-1 companion</string>
+    <string name="onboarding_welcome_body">Track meals, doses, and progress — all built around your GLP-1 journey, not a generic diet.</string>
+    <string name="onboarding_scan_title">Scan meals in seconds</string>
+    <string name="onboarding_scan_body">Snap a photo and let AI estimate calories, protein, and fiber — no manual searching or logging.</string>
+    <string name="onboarding_progress_title">Watch your progress add up</string>
+    <string name="onboarding_progress_body">Streaks, weight trends, and your full weight-loss journey — all in one place, whenever you want to look back.</string>
+    <string name="onboarding_hero_journal_subtitle">Today, Week 4</string>
+    <string name="onboarding_hero_water_badge">Goal</string>
+    <string name="onboarding_hero_target_badge">Good</string>
+    <string name="onboarding_have_account">Already have an account?</string>
+    <string name="sign_in_action">Sign in</string>
+    <string name="onboarding_hero_journal_title">Steady Journal</string>
+    <string name="onboarding_hero_active">Active</string>
+    <string name="onboarding_hero_next_dose">Next dose</string>
+    <string name="onboarding_hero_scan_tag">Protein · Fiber · Carbs</string>
+    <string name="onboarding_hero_trend">12-week trend</string>
+    <string name="onboarding_hero_streak_label">day streak</string>
+    <string name="onboarding_hero_since_start">since start</string>
+    <string name="onboarding_hero_target_label">Target</string>
 
     <string name="tab_home">Home</string>
     <string name="tab_scan">Scan</string>
@@ -64,10 +80,29 @@
     <string name="log_side_effect_coming_soon">Symptom logging is coming soon.</string>
 
     <string name="medication_dose_title">Medication &amp; dose</string>
-    <string name="medication_dose_coming_soon">Medication and dose settings are coming soon.</string>
+    <string name="medication_dose_how_taken">How do you take it?</string>
+    <string name="medication_dose_route_injection">Injection</string>
+    <string name="medication_dose_route_oral">Pill / oral</string>
+    <string name="medication_dose_route_hint">Choosing Pill / oral hides the injection-site step in Log Dose.</string>
+    <string name="medication_dose_name_label">Medication</string>
+    <string name="medication_dose_amount_label">Current dose</string>
+    <string name="medication_dose_frequency_label">Frequency</string>
+    <string name="medication_dose_frequency_weekly">Weekly</string>
+    <string name="medication_dose_frequency_daily">Daily</string>
+    <string name="medication_dose_tip">Updating your dose adjusts your target macronutrients and tracking prompts automatically.</string>
+    <string name="medication_dose_save">Save</string>
+    <string name="medication_setup_continue">Continue</string>
 
     <string name="daily_goals_title">Daily goals</string>
-    <string name="daily_goals_coming_soon">Protein, fiber and water goals are coming soon.</string>
+    <string name="daily_goals_subtitle">Set your own daily targets. Everyone\'s needs are different on GLP-1 — check with your care team if you\'re unsure.</string>
+    <string name="daily_goals_fiber_label">Fiber</string>
+    <string name="daily_goals_protein_label">Protein</string>
+    <string name="daily_goals_water_label">Water</string>
+    <string name="daily_goals_fiber_caption">Supports digestion &amp; eases fullness</string>
+    <string name="daily_goals_protein_caption">Preserves lean muscle mass during weight loss</string>
+    <string name="daily_goals_water_caption">Crucial for hydration and managing medication side effects</string>
+    <string name="daily_goals_reset_defaults">Reset to recommended defaults</string>
+    <string name="daily_goals_save">Save</string>
 
     <string name="notifications_title">Notifications</string>
     <string name="notifications_coming_soon">Your notification inbox is coming soon.</string>
