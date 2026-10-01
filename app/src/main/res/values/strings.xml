@@ -13,8 +13,8 @@
     <string name="sign_in_terms_notice">By continuing, you agree to Steady\'s Terms and Privacy Policy.</string>
 
     <string name="onboarding_skip">Skip</string>
-    <string name="onboarding_next">Next</string>
-    <string name="onboarding_get_started">Get started</string>
+    <string name="onboarding_next">NEXT</string>
+    <string name="onboarding_get_started">GET STARTED</string>
     <string name="onboarding_welcome_title">Your steady GLP-1 companion</string>
     <string name="onboarding_welcome_body">Track meals, doses, and progress — all built around your GLP-1 journey, not a generic diet.</string>
     <string name="onboarding_scan_title">Scan meals in seconds</string>

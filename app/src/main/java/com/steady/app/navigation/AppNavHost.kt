@@ -1,5 +1,7 @@
 package com.steady.app.navigation
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -64,7 +66,9 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         NavHost(
             navController = navController,
             startDestination = SplashRoute,
-            modifier = modifier.padding(bottom = padding.calculateBottomPadding()),
+            modifier = modifier
+                .padding(bottom = padding.calculateBottomPadding())
+                .consumeWindowInsets(WindowInsets(bottom = padding.calculateBottomPadding())),
         ) {
             composable<SplashRoute> {
                 SplashScreen(onDestination = { destination ->

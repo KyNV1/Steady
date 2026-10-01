@@ -200,15 +200,13 @@ fun OnboardingScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(Dimens.dp_56),
+                    .height(Dimens.dp_50),
                 shape = SteadyShapes.button,
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                     containerColor = WelcomeDesignColors.PrimaryContainer,
                 ),
             ) {
                 Text(stringResource(if (isLastPage) R.string.onboarding_get_started else R.string.onboarding_next))
-                Spacer(Modifier.width(LocalAppSpacing.current.small))
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(Dimens.dp_18))
             }
 
             Row(
@@ -216,19 +214,17 @@ fun OnboardingScreen(
                     .fillMaxWidth()
                     .padding(vertical = LocalAppSpacing.current.medium),
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     stringResource(R.string.onboarding_have_account) + " ",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = Dimens.sp_13),
+                    fontSize = Dimens.sp_13,
                     color = WelcomeDesignColors.OnSurfaceVariant,
                 )
                 Text(
                     stringResource(R.string.sign_in_action),
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = Dimens.sp_13,
-                        fontWeight = FontWeight.SemiBold,
-                        textDecoration = TextDecoration.Underline,
-                    ),
+                    fontSize = Dimens.sp_13,
+                    fontWeight = FontWeight.Bold,
                     color = WelcomeDesignColors.Primary,
                     modifier = Modifier.clickable { viewModel.markCompleted(onSignIn) },
                 )
