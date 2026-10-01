@@ -44,20 +44,29 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.steady.app.R
+import com.steady.app.ui.components.IconTile
 import com.steady.app.ui.components.MiniStatCard
 import com.steady.app.ui.components.PageDotsIndicator
 import com.steady.app.ui.components.PremiumBadge
+import com.steady.app.ui.components.SteadyCard
+import com.steady.app.ui.theme.Dimens
 import com.steady.app.ui.theme.LocalAppSpacing
 import com.steady.app.ui.theme.LocalSteadyExtendedColors
+import com.steady.app.ui.theme.OnboardingBodyStyle
+import com.steady.app.ui.theme.OnboardingHeadlineStyle
 import com.steady.app.ui.theme.SteadyShapes
+import com.steady.app.ui.theme.WelcomeDesignColors
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.launch
 
 private data class OnboardingPage(val titleRes: Int, val bodyRes: Int)
@@ -67,20 +76,6 @@ private val pages = listOf(
     OnboardingPage(R.string.onboarding_scan_title, R.string.onboarding_scan_body),
     OnboardingPage(R.string.onboarding_progress_title, R.string.onboarding_progress_body),
 )
-
-private object WelcomeDesignColors {
-    val Background = Color(0xFFFCF9F3)
-    val Primary = Color(0xFF154539)
-    val PrimaryContainer = Color(0xFF2F5D50)
-    val PrimaryFixed = Color(0xFFBCEDDC)
-    val Secondary = Color(0xFF934A21)
-    val SecondaryContainer = Color(0xFFFD9F6E)
-    val Tertiary = Color(0xFF06425C)
-    val TertiaryContainer = Color(0xFF285A74)
-    val OnSurfaceVariant = Color(0xFF404945)
-    val ProgressTrack = Color(0xFFEBE8E2)
-    val InactiveDot = Color(0xFFD5DDD2)
-}
 
 @Composable
 fun OnboardingScreen(
@@ -102,31 +97,24 @@ fun OnboardingScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(Dimens.dp_56),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (pagerState.currentPage == 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Surface(
-                            shape = CircleShape,
-                            color = LocalSteadyExtendedColors.current.surfaceContainerGreen,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                            modifier = Modifier.size(32.dp),
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    Icons.Default.Spa,
-                                    contentDescription = null,
-                                    tint = WelcomeDesignColors.Primary,
-                                    modifier = Modifier.size(20.dp),
-                                )
-                            }
-                        }
+                        IconTile(
+                            icon = Icons.Default.Spa,
+                            size = Dimens.dp_32,
+                            containerColor = LocalSteadyExtendedColors.current.surfaceContainerGreen,
+                            iconTint = WelcomeDesignColors.Primary,
+                            iconSize = Dimens.dp_20,
+                            border = BorderStroke(Dimens.dp_1, MaterialTheme.colorScheme.outline),
+                        )
                         Text(
                             stringResource(R.string.app_name),
                             style = MaterialTheme.typography.headlineMedium.copy(
-                                fontSize = 20.sp,
+                                fontSize = Dimens.sp_20,
                                 lineHeight = 26.sp,
                                 fontWeight = FontWeight.SemiBold,
                             ),
@@ -146,38 +134,43 @@ fun OnboardingScreen(
                     TextButton(onClick = { viewModel.markCompleted(onFinished) }) {
                         Text(
                             stringResource(R.string.onboarding_skip),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
+                            style = MaterialTheme.typography.labelLarge.copy(fontSize = Dimens.sp_14),
                             color = WelcomeDesignColors.OnSurfaceVariant,
                         )
                     }
                 } else {
-                    Spacer(Modifier.size(1.dp))
+                    Spacer(Modifier.size(Dimens.dp_1))
                 }
             }
 
             HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { index ->
                 val page = pages[index]
-                Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer {
+                            val pageOffset = pagerState.getOffsetDistanceInPages(index).absoluteValue.coerceIn(0f, 1f)
+                            alpha = lerp(0.4f, 1f, 1f - pageOffset)
+                            scaleY = lerp(0.92f, 1f, 1f - pageOffset)
+                            translationX = size.width * pageOffset * 0.08f * if (index > pagerState.currentPage) 1f else -1f
+                        },
+                ) {
                     Spacer(Modifier.height(LocalAppSpacing.current.extraSmall))
                     when (index) {
                         0 -> WelcomeHero()
                         1 -> ScanMealsHero()
                         else -> ProgressHero()
                     }
-                    Spacer(Modifier.height(28.dp))
+                    Spacer(Modifier.height(Dimens.dp_28))
                     Text(
                         stringResource(page.titleRes),
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontSize = 28.sp,
-                            lineHeight = 34.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        ),
+                        style = OnboardingHeadlineStyle,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Text(
                         stringResource(page.bodyRes),
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 15.sp, lineHeight = 24.sp),
+                        style = OnboardingBodyStyle,
                         color = WelcomeDesignColors.OnSurfaceVariant,
                         textAlign = TextAlign.Start,
                         modifier = Modifier
@@ -192,7 +185,7 @@ fun OnboardingScreen(
                 currentPage = pagerState.currentPage,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp),
+                    .padding(vertical = Dimens.dp_24),
                 activeColor = WelcomeDesignColors.PrimaryContainer,
                 inactiveColor = WelcomeDesignColors.InactiveDot,
             )
@@ -207,7 +200,7 @@ fun OnboardingScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(Dimens.dp_56),
                 shape = SteadyShapes.button,
                 colors = androidx.compose.material3.ButtonDefaults.buttonColors(
                     containerColor = WelcomeDesignColors.PrimaryContainer,
@@ -215,7 +208,7 @@ fun OnboardingScreen(
             ) {
                 Text(stringResource(if (isLastPage) R.string.onboarding_get_started else R.string.onboarding_next))
                 Spacer(Modifier.width(LocalAppSpacing.current.small))
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp))
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(Dimens.dp_18))
             }
 
             Row(
@@ -226,13 +219,13 @@ fun OnboardingScreen(
             ) {
                 Text(
                     stringResource(R.string.onboarding_have_account) + " ",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = Dimens.sp_13),
                     color = WelcomeDesignColors.OnSurfaceVariant,
                 )
                 Text(
                     stringResource(R.string.sign_in_action),
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 13.sp,
+                        fontSize = Dimens.sp_13,
                         fontWeight = FontWeight.SemiBold,
                         textDecoration = TextDecoration.Underline,
                     ),
@@ -246,12 +239,7 @@ fun OnboardingScreen(
 
 @Composable
 private fun HeroCard(content: @Composable ColumnScope.() -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = SteadyShapes.hero,
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-    ) {
+    SteadyCard(modifier = Modifier.fillMaxWidth(), shape = SteadyShapes.hero) {
         Column(Modifier.padding(LocalAppSpacing.current.medium), content = content)
     }
 }
@@ -259,47 +247,36 @@ private fun HeroCard(content: @Composable ColumnScope.() -> Unit) {
 @Composable
 private fun WelcomeHero() {
     val extended = LocalSteadyExtendedColors.current
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = SteadyShapes.hero,
-        color = extended.surfaceContainerGreen,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-    ) {
-        Column(Modifier.padding(20.dp)) {
+    SteadyCard(modifier = Modifier.fillMaxWidth(), shape = SteadyShapes.hero, color = extended.surfaceContainerGreen) {
+        Column(Modifier.padding(Dimens.dp_20)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Surface(
+                    IconTile(
+                        icon = Icons.Default.Spa,
+                        size = Dimens.dp_28,
                         shape = SteadyShapes.iconTile,
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                        modifier = Modifier.size(28.dp),
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Default.Spa,
-                                contentDescription = null,
-                                tint = WelcomeDesignColors.Primary,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    }
-                    Column(Modifier.padding(start = 8.dp)) {
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+                        iconTint = WelcomeDesignColors.Primary,
+                        iconSize = Dimens.dp_16,
+                        border = BorderStroke(Dimens.dp_1, MaterialTheme.colorScheme.outline),
+                    )
+                    Column(Modifier.padding(start = Dimens.dp_8)) {
                         Text(
                             stringResource(R.string.onboarding_hero_journal_title),
                             style = MaterialTheme.typography.headlineMedium.copy(
                                 fontSize = 15.sp,
-                                lineHeight = 18.sp,
+                                lineHeight = Dimens.sp_18,
                                 fontWeight = FontWeight.SemiBold,
                             ),
                             color = WelcomeDesignColors.Primary,
                         )
                         Text(
                             stringResource(R.string.onboarding_hero_journal_subtitle),
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp, lineHeight = 14.sp),
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = Dimens.sp_11, lineHeight = Dimens.sp_14),
                             color = WelcomeDesignColors.OnSurfaceVariant,
                         )
                     }
@@ -307,34 +284,34 @@ private fun WelcomeHero() {
                 Surface(
                     shape = SteadyShapes.chip,
                     color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    border = BorderStroke(Dimens.dp_1, MaterialTheme.colorScheme.outline),
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(horizontal = Dimens.dp_10, vertical = Dimens.dp_4),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Box(
                             Modifier
-                                .size(8.dp)
+                                .size(Dimens.dp_8)
                                 .background(WelcomeDesignColors.PrimaryContainer, CircleShape),
                         )
                         Text(
                             stringResource(R.string.onboarding_hero_active),
                             style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 10.sp,
-                                lineHeight = 14.sp,
+                                fontSize = Dimens.sp_10,
+                                lineHeight = Dimens.sp_14,
                                 fontWeight = FontWeight.Medium,
                                 letterSpacing = 0.sp,
                             ),
                             color = WelcomeDesignColors.OnSurfaceVariant,
-                            modifier = Modifier.padding(start = 6.dp),
+                            modifier = Modifier.padding(start = Dimens.dp_6),
                         )
                     }
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Spacer(Modifier.height(Dimens.dp_16))
+            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.dp_10)) {
                 MiniStatCard(
                     icon = Icons.Default.FitnessCenter,
                     accentColor = WelcomeDesignColors.Secondary,
@@ -376,66 +353,48 @@ private fun WelcomeHero() {
                 )
             }
 
-            Spacer(Modifier.height(12.dp))
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            ) {
+            Spacer(Modifier.height(Dimens.dp_12))
+            SteadyCard(shape = CircleShape) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 14.dp, vertical = 8.dp),
+                        .padding(horizontal = Dimens.dp_14, vertical = Dimens.dp_8),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Surface(
-                        shape = CircleShape,
-                        color = extended.surfaceContainerGreen,
-                        modifier = Modifier.size(20.dp),
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Default.Medication,
-                                contentDescription = null,
-                                tint = WelcomeDesignColors.Primary,
-                                modifier = Modifier.size(13.dp),
-                            )
-                        }
-                    }
+                    IconTile(
+                        icon = Icons.Default.Medication,
+                        size = Dimens.dp_20,
+                        containerColor = extended.surfaceContainerGreen,
+                        iconTint = WelcomeDesignColors.Primary,
+                        iconSize = 13.dp,
+                    )
                     Text(
                         stringResource(R.string.onboarding_hero_next_dose),
                         style = MaterialTheme.typography.labelMedium.copy(
-                            fontSize = 12.sp,
-                            lineHeight = 16.sp,
+                            fontSize = Dimens.sp_12,
+                            lineHeight = Dimens.sp_16,
                             fontWeight = FontWeight.Medium,
                         ),
                         color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(start = 8.dp),
+                        modifier = Modifier.padding(start = Dimens.dp_8),
                     )
                     Text(
                         " · Thu 9:00 AM",
                         style = MaterialTheme.typography.labelMedium.copy(
-                            fontSize = 12.sp,
-                            lineHeight = 16.sp,
+                            fontSize = Dimens.sp_12,
+                            lineHeight = Dimens.sp_16,
                             fontWeight = FontWeight.Medium,
                         ),
                         color = WelcomeDesignColors.OnSurfaceVariant,
                         modifier = Modifier.weight(1f),
                     )
-                    Surface(
-                        shape = CircleShape,
-                        color = WelcomeDesignColors.PrimaryFixed,
-                        modifier = Modifier.size(16.dp),
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Default.Check,
-                                contentDescription = null,
-                                tint = WelcomeDesignColors.Primary,
-                                modifier = Modifier.size(12.dp),
-                            )
-                        }
-                    }
+                    IconTile(
+                        icon = Icons.Default.Check,
+                        size = Dimens.dp_16,
+                        containerColor = WelcomeDesignColors.PrimaryFixed,
+                        iconTint = WelcomeDesignColors.Primary,
+                        iconSize = Dimens.dp_12,
+                    )
                 }
             }
         }
@@ -454,20 +413,16 @@ private fun ScanMealsHero() {
             color = extended.surfaceContainerOrange,
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.surface, modifier = Modifier.size(88.dp)) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            Icons.Default.Restaurant,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier.size(36.dp),
-                        )
-                    }
-                }
+                IconTile(
+                    icon = Icons.Default.Restaurant,
+                    size = 88.dp,
+                    iconTint = MaterialTheme.colorScheme.secondary,
+                    iconSize = Dimens.dp_36,
+                )
             }
         }
         Spacer(Modifier.height(LocalAppSpacing.current.medium))
-        Surface(shape = SteadyShapes.chip, color = MaterialTheme.colorScheme.surface, border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)) {
+        SteadyCard(shape = SteadyShapes.chip) {
             Text(
                 stringResource(R.string.onboarding_hero_scan_tag),
                 style = MaterialTheme.typography.labelMedium,

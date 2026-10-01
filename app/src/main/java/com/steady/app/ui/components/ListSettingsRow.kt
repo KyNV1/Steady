@@ -1,12 +1,9 @@
 package com.steady.app.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Notifications
@@ -33,14 +30,7 @@ fun ListSettingsRow(icon: ImageVector, label: String, onClick: () -> Unit, modif
             .padding(horizontal = LocalAppSpacing.current.medium, vertical = LocalAppSpacing.current.small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier = Modifier
-                .size(34.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainer, SteadyShapes.iconTile),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-        }
+        IconTile(icon = icon, size = 34.dp, shape = SteadyShapes.iconTile)
         Text(
             label,
             style = MaterialTheme.typography.bodyLarge,

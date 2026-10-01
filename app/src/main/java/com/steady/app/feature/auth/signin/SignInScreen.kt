@@ -1,6 +1,5 @@
 package com.steady.app.feature.auth.signin
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +12,6 @@ import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -25,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -41,6 +38,7 @@ import com.steady.app.R
 import com.steady.app.ui.components.AppButton
 import com.steady.app.ui.components.AppButtonStyle
 import com.steady.app.ui.components.LoadingDialog
+import com.steady.app.ui.components.SteadyCard
 import com.steady.app.ui.theme.LocalAppSpacing
 import com.steady.app.ui.theme.SteadyShapes
 import kotlinx.coroutines.launch
@@ -62,12 +60,7 @@ fun SignInScreen(
         modifier = Modifier.fillMaxSize().padding(LocalAppSpacing.current.large),
         verticalArrangement = Arrangement.Bottom,
     ) {
-        Surface(
-            shape = SteadyShapes.bottomSheetTop,
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+        SteadyCard(shape = SteadyShapes.bottomSheetTop, modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

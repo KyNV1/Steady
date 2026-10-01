@@ -38,3 +38,19 @@ val SteadySecondaryDark = Color(0xFFF3AE85)
 val SteadyOnSecondaryDark = Color(0xFF4A2411)
 val SteadyTertiaryDark = Color(0xFFA9CBDD)
 val SteadyErrorDark = Color(0xFFFFB4A3)
+
+// Onboarding hero palette — a separate Stitch export for the welcome/scan/progress slides,
+// distinct from the app-wide Steady* tokens above (deeper primary green, warmer background).
+object WelcomeDesignColors {
+    val Background = Color(0xFFFCF9F3)
+    val Primary = Color(0xFF154539)
+    val PrimaryContainer = Color(0xFF2F5D50)
+    val PrimaryFixed = Color(0xFFBCEDDC)
+    val Secondary = Color(0xFF934A21)
+    val SecondaryContainer = Color(0xFFFD9F6E)
+    val Tertiary = Color(0xFF06425C)
+    val TertiaryContainer = Color(0xFF285A74)
+    val OnSurfaceVariant = Color(0xFF404945)
+    val ProgressTrack = Color(0xFFEBE8E2)
+    val InactiveDot = Color(0xFFD5DDD2)
+}

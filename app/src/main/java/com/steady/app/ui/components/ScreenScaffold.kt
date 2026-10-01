@@ -11,15 +11,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.steady.app.ui.theme.LocalAppSpacing
 
-/** Common shell for detail/tab screens: top bar + scrollable, screen-padded content column. */
+/**
+ * Common shell for detail/tab screens: optional top bar + scrollable, screen-padded content
+ * column. Pass [title] to get the standard [AppTopBar]; leave it null for root tab screens that
+ * want no top bar (e.g. Home, Profile). [floatingActionButton] forwards straight to [Scaffold].
+ */
 @Composable
 fun ScreenScaffold(
-    title: String,
+    title: String? = null,
     onBack: (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null,
+    floatingActionButton: @Composable (() -> Unit)? = null,
     content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit,
 ) {
-    Scaffold(topBar = { AppTopBar(title = title, onBack = onBack, trailing = trailing) }) { padding ->
+    Scaffold(
+        topBar = { title?.let { AppTopBar(title = it, onBack = onBack, trailing = trailing) } },
+        floatingActionButton = floatingActionButton ?: {},
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()

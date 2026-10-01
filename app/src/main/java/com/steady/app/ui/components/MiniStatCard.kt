@@ -1,9 +1,6 @@
 package com.steady.app.ui.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +15,6 @@ import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.steady.app.ui.theme.AppTheme
 import com.steady.app.ui.theme.LocalAppSpacing
-import com.steady.app.ui.theme.SteadyShapes
 
 /**
  * Compact 3-across stat tile (tinted icon badge + eyebrow, big value with a lighter unit suffix,
@@ -53,22 +48,17 @@ fun MiniStatCard(
     progress: Float,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-    ) {
+    SteadyCard(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp)) {
         Column(Modifier.padding(10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(accentTint, RoundedCornerShape(6.dp)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(icon, contentDescription = null, tint = accentColor, modifier = Modifier.size(14.dp))
-                }
+                IconTile(
+                    icon = icon,
+                    size = 24.dp,
+                    shape = RoundedCornerShape(6.dp),
+                    containerColor = accentTint,
+                    iconTint = accentColor,
+                    iconSize = 14.dp,
+                )
                 Spacer(Modifier.weight(1f))
                 Text(
                     badgeText,

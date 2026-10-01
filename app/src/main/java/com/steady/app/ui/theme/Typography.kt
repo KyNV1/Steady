@@ -29,6 +29,18 @@ val AppTypography = Typography(
         fontSize = 40.sp,
         lineHeight = 48.sp,
     ),
+    displayMedium = TextStyle(
+        fontFamily = FrauncesFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 36.sp,
+        lineHeight = 44.sp,
+    ),
+    displaySmall = TextStyle(
+        fontFamily = FrauncesFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 34.sp,
+        lineHeight = 40.sp,
+    ),
     headlineLarge = TextStyle(
         fontFamily = FrauncesFamily,
         fontWeight = FontWeight.SemiBold,
@@ -41,6 +53,12 @@ val AppTypography = Typography(
         fontSize = 26.sp,
         lineHeight = 32.sp,
     ),
+    headlineSmall = TextStyle(
+        fontFamily = FrauncesFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        lineHeight = 26.sp,
+    ),
     titleLarge = TextStyle(
         fontFamily = WorkSansFamily,
         fontWeight = FontWeight.SemiBold,
@@ -52,6 +70,12 @@ val AppTypography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 22.sp,
+    ),
+    titleSmall = TextStyle(
+        fontFamily = WorkSansFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
     ),
     bodyLarge = TextStyle(
         fontFamily = WorkSansFamily,
@@ -91,4 +115,21 @@ val AppTypography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp,
     ),
+)
+
+/** Page headline style for every onboarding slide (welcome/scan/progress). */
+val OnboardingHeadlineStyle = TextStyle(
+    fontFamily = FrauncesFamily,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 28.sp,
+    lineHeight = 34.sp,
+)
+
+/** Page body style for every onboarding slide (welcome/scan/progress). */
+val OnboardingBodyStyle = TextStyle(
+    fontFamily = WorkSansFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 15.sp,
+    lineHeight = 24.sp,
+    letterSpacing = 0.2.sp,
 )

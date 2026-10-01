@@ -1,21 +1,17 @@
 package com.steady.app.ui.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.steady.app.ui.theme.AppTheme
 import com.steady.app.ui.theme.LocalAppSpacing
-import com.steady.app.ui.theme.SteadyShapes
 
 data class MacroStat(val label: String, val value: String)
 
@@ -35,12 +31,7 @@ fun MacroGridCard(stats: List<MacroStat>, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(LocalAppSpacing.current.cardGap),
             ) {
                 rowStats.forEach { stat ->
-                    Surface(
-                        modifier = Modifier.weight(1f),
-                        shape = SteadyShapes.card,
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                    ) {
+                    SteadyCard(modifier = Modifier.weight(1f)) {
                         Column(Modifier.padding(LocalAppSpacing.current.medium)) {
                             Text(stat.value, style = MaterialTheme.typography.titleLarge)
                             Text(
