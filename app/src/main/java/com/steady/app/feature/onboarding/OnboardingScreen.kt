@@ -1,6 +1,7 @@
 package com.steady.app.feature.onboarding
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,28 +10,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Medication
-import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,7 +47,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -162,17 +168,19 @@ fun OnboardingScreen(
                         else -> ProgressHero()
                     }
                     Spacer(Modifier.height(Dimens.dp_28))
+                    // Stitch centers the copy block on every onboarding page except Welcome (text-left).
+                    val copyAlign = if (index == 0) TextAlign.Start else TextAlign.Center
                     Text(
                         stringResource(page.titleRes),
                         style = OnboardingHeadlineStyle,
-                        textAlign = TextAlign.Start,
+                        textAlign = copyAlign,
                         modifier = Modifier.fillMaxWidth(),
                     )
                     Text(
                         stringResource(page.bodyRes),
                         style = OnboardingBodyStyle,
                         color = WelcomeDesignColors.OnSurfaceVariant,
-                        textAlign = TextAlign.Start,
+                        textAlign = copyAlign,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = LocalAppSpacing.current.small),
@@ -397,33 +405,107 @@ private fun WelcomeHero() {
     }
 }
 
+private enum class ViewfinderCorner { TopStart, TopEnd, BottomStart, BottomEnd }
+
+/** One L-shaped camera-viewfinder corner mark, matching Stitch's scan hero bracket style. */
+@Composable
+private fun ViewfinderBracket(corner: ViewfinderCorner, modifier: Modifier = Modifier) {
+    val color = MaterialTheme.colorScheme.onSurfaceVariant
+    Canvas(modifier = modifier.size(Dimens.dp_16)) {
+        val strokeWidth = Dimens.dp_2.toPx()
+        val edge = size.minDimension
+        val horizontalY = if (corner == ViewfinderCorner.TopStart || corner == ViewfinderCorner.TopEnd) 0f else edge
+        val verticalX = if (corner == ViewfinderCorner.TopStart || corner == ViewfinderCorner.BottomStart) 0f else edge
+        drawLine(color, Offset(0f, horizontalY), Offset(edge, horizontalY), strokeWidth, cap = StrokeCap.Round)
+        drawLine(color, Offset(verticalX, 0f), Offset(verticalX, edge), strokeWidth, cap = StrokeCap.Round)
+    }
+}
+
 @Composable
 private fun ScanMealsHero() {
     val extended = LocalSteadyExtendedColors.current
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Surface(
+    SteadyCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = SteadyShapes.hero,
+        color = extended.surfaceContainerOrange,
+        border = BorderStroke(Dimens.dp_1, extended.surfaceContainerOrangeAlt),
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1.2f),
-            shape = SteadyShapes.hero,
-            color = extended.surfaceContainerOrange,
+                .padding(Dimens.dp_24),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.size(190.dp), contentAlignment = Alignment.Center) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    shape = RoundedCornerShape(Dimens.dp_16),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(Dimens.dp_1, MaterialTheme.colorScheme.outline),
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.surfaceContainer,
+                            border = BorderStroke(Dimens.dp_1, extended.outlineSubtle),
+                            modifier = Modifier.size(96.dp),
+                        ) {
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                                IconTile(
+                                    icon = Icons.Outlined.Restaurant,
+                                    size = Dimens.dp_64,
+                                    containerColor = extended.premiumBg,
+                                    iconTint = MaterialTheme.colorScheme.secondary,
+                                    iconSize = Dimens.dp_32,
+                                )
+                            }
+                        }
+                        // Pulsing scanner-beam line crossing the plate circle, per the Stitch hero.
+                        Box(
+                            modifier = Modifier
+                                .width(112.dp)
+                                .height(Dimens.dp_2)
+                                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f)),
+                        )
+                    }
+                }
+                ViewfinderBracket(ViewfinderCorner.TopStart, Modifier.align(Alignment.TopStart).padding(Dimens.dp_12))
+                ViewfinderBracket(ViewfinderCorner.TopEnd, Modifier.align(Alignment.TopEnd).padding(Dimens.dp_12))
+                ViewfinderBracket(ViewfinderCorner.BottomStart, Modifier.align(Alignment.BottomStart).padding(Dimens.dp_12))
+                ViewfinderBracket(ViewfinderCorner.BottomEnd, Modifier.align(Alignment.BottomEnd).padding(Dimens.dp_12))
                 IconTile(
-                    icon = Icons.Default.Restaurant,
-                    size = 88.dp,
+                    icon = Icons.Default.CenterFocusStrong,
+                    size = Dimens.dp_22,
+                    containerColor = extended.surfaceContainerOrangeAlt,
                     iconTint = MaterialTheme.colorScheme.secondary,
-                    iconSize = Dimens.dp_36,
+                    iconSize = Dimens.dp_14,
+                    border = BorderStroke(Dimens.dp_1, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = Dimens.dp_4, y = -Dimens.dp_4),
                 )
             }
-        }
-        Spacer(Modifier.height(LocalAppSpacing.current.medium))
-        SteadyCard(shape = SteadyShapes.chip) {
-            Text(
-                stringResource(R.string.onboarding_hero_scan_tag),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(horizontal = LocalAppSpacing.current.medium, vertical = LocalAppSpacing.current.small),
-            )
+
+            Spacer(Modifier.height(Dimens.dp_16))
+            SteadyCard(shape = SteadyShapes.chip) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = Dimens.dp_14, vertical = Dimens.dp_6),
+                ) {
+                    Icon(
+                        Icons.Default.AutoAwesome,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        modifier = Modifier.size(Dimens.dp_14),
+                    )
+                    Text(
+                        stringResource(R.string.onboarding_hero_scan_tag),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = WelcomeDesignColors.Primary,
+                        modifier = Modifier.padding(start = Dimens.dp_6),
+                    )
+                }
+            }
         }
     }
 }
