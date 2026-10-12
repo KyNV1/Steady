@@ -27,7 +27,11 @@ class TrackingRepositoryImplTest {
         database = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext(), AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        repository = TrackingRepositoryImpl(database.medicationProfileDao(), database.dailyGoalsDao())
+        repository = TrackingRepositoryImpl(
+            database.medicationProfileDao(),
+            database.dailyGoalsDao(),
+            database.dailyIntakeDao(),
+        )
     }
 
     @After

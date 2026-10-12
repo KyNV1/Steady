@@ -21,5 +21,5 @@ object SteadyShapes {
     val button = RoundedCornerShape(14.dp)
     val chip = CircleShape
     val iconTile = RoundedCornerShape(12.dp)
-    val bottomSheetTop = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+    val bottomSheetTop = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
 }

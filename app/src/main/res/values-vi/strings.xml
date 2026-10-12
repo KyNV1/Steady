@@ -7,10 +7,12 @@
     <string name="sign_in_subtitle">Bảo mật dữ liệu của bạn bằng tài khoản Google — không cần nhớ mật khẩu.</string>
     <string name="sign_in_with_google">Đăng nhập bằng Google</string>
     <string name="continue_as_demo">Tiếp tục (Demo)</string>
-    <string name="google_sign_in_not_configured">Đăng nhập Google chưa được cấu hình. Thêm google-services.json và web client ID, hoặc dùng tùy chọn demo bên dưới trên bản debug.</string>
+    <string name="google_sign_in_not_configured">Đăng nhập Google chưa được cấu hình.</string>
     <string name="sign_in_cancel">Hủy</string>
     <string name="sign_in_cancelled">Đã hủy đăng nhập.</string>
     <string name="sign_in_terms_notice">Khi tiếp tục, bạn đồng ý với Điều khoản và Chính sách quyền riêng tư của Steady.</string>
+    <string name="sign_in_terms_link">Điều khoản</string>
+    <string name="sign_in_privacy_link">Chính sách quyền riêng tư</string>
 
     <string name="onboarding_skip">Bỏ qua</string>
     <string name="onboarding_next">Tiếp theo</string>
@@ -41,18 +43,34 @@
     <string name="tab_community">Cộng đồng</string>
     <string name="tab_profile">Hồ sơ</string>
 
-    <string name="home_title">Hôm nay</string>
+    <string name="home_greeting_morning">Chào buổi sáng</string>
+    <string name="home_greeting_afternoon">Chào buổi chiều</string>
+    <string name="home_greeting_evening">Chào buổi tối</string>
+    <string name="home_greeting_morning_named">Chào buổi sáng, %1$s</string>
+    <string name="home_greeting_afternoon_named">Chào buổi chiều, %1$s</string>
+    <string name="home_greeting_evening_named">Chào buổi tối, %1$s</string>
+    <string name="home_streak_cd">Chuỗi %1$d ngày</string>
     <string name="home_scan_meal">Quét bữa ăn</string>
-    <string name="home_next_dose_label">Liều tiếp theo</string>
-    <string name="home_no_data_placeholder">Chưa có dữ liệu</string>
-    <string name="home_today_totals">Tổng hôm nay</string>
-    <string name="macro_calories">Calo</string>
+    <string name="home_scan_subtitle">Hướng camera, chụp, xong trong vài giây</string>
+    <string name="home_todays_progress">Tiến độ hôm nay</string>
+    <string name="home_quick_add_hint">Chạm − / + để thêm nhanh</string>
+    <string name="home_decrease_cd">Giảm %1$s</string>
+    <string name="home_increase_cd">Tăng %1$s</string>
+    <string name="home_log">Ghi</string>
+    <string name="home_next_dose_title">%1$s — liều tiếp theo</string>
+    <string name="home_med_weekly_injection">Tiêm hằng tuần</string>
+    <string name="home_med_daily_injection">Tiêm hằng ngày</string>
+    <string name="home_med_weekly_oral">Uống hằng tuần</string>
+    <string name="home_med_daily_oral">Uống hằng ngày</string>
+    <string name="home_med_setup_title">Thiết lập thuốc của bạn</string>
+    <string name="home_med_setup_subtitle">Thêm thuốc GLP-1 để theo dõi liều</string>
+    <string name="home_med_setup_action">Thiết lập</string>
+    <string name="home_side_effects_title">Hôm nay có tác dụng phụ không?</string>
+    <string name="home_side_effects_subtitle">Chỉ mất 10 giây để ghi</string>
+    <string name="home_insights_title">Xem thống kê tuần này</string>
+    <string name="home_insights_subtitle">Xu hướng chất xơ, đạm và nước</string>
     <string name="macro_protein">Đạm</string>
     <string name="macro_fiber">Chất xơ</string>
-    <string name="macro_carbs">Tinh bột</string>
-    <string name="home_log_a_moment">Ghi lại</string>
-    <string name="home_log_dose_action">Ghi liều dùng</string>
-    <string name="home_log_side_effect_action">Ghi tác dụng phụ</string>
 
     <string name="scan_title">Quét bữa ăn</string>
     <string name="scan_coming_soon">Tính năng quét bữa ăn bằng camera sắp ra mắt.</string>

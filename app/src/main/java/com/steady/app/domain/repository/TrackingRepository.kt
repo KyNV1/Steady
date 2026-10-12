@@ -1,6 +1,7 @@
 package com.steady.app.domain.repository
 
 import com.steady.app.domain.model.DailyGoals
+import com.steady.app.domain.model.DailyIntake
 import com.steady.app.domain.model.DailyNutritionTotals
 import com.steady.app.domain.model.DoseLog
 import com.steady.app.domain.model.MealLog
@@ -17,6 +18,10 @@ interface TrackingRepository {
     fun observeDoseLogs(userId: String): Flow<List<DoseLog>>
     fun observeSideEffects(userId: String, fromEpochMillis: Long, toEpochMillis: Long): Flow<List<SideEffectLog>>
     fun observeProgress(userId: String): Flow<List<ProgressEntry>>
+    fun observeDailyIntake(userId: String, epochDay: Long): Flow<DailyIntake>
+    fun observeIntakeDays(userId: String): Flow<Set<Long>>
+
+    suspend fun adjustDailyIntake(userId: String, epochDay: Long, fiberDelta: Int, proteinDelta: Int, waterDeltaMl: Int)
 
     suspend fun saveMedicationProfile(profile: MedicationProfile)
     suspend fun saveDailyGoals(userId: String, goals: DailyGoals)

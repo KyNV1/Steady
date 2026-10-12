@@ -7,6 +7,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -14,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.navigation
 import androidx.navigation.navDeepLink
 import com.steady.app.feature.account.AccountScreen
@@ -47,19 +51,19 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         BottomTab.entries.firstOrNull { tab -> destination.hierarchy.any { it.hasRoute(tab.graphRoute::class) } }
     }
 
+    // Each tab keeps its own back stack: save the outgoing tab's state, restore the incoming one's.
+    val switchTab: (BottomTab) -> Unit = { tab ->
+        navController.navigate(tab.startRoute) {
+            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     Scaffold(
         bottomBar = {
             if (currentTab != null) {
-                SteadyBottomBar(
-                    selected = currentTab,
-                    onSelect = { tab ->
-                        navController.navigate(tab.startRoute) {
-                            popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                )
+                SteadyBottomBar(selected = currentTab, onSelect = switchTab)
             }
         },
     ) { padding ->
@@ -85,7 +89,11 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                 val goToSignIn = { navController.navigate(SignInRoute) }
                 OnboardingScreen(onFinished = goToSignIn, onSignIn = goToSignIn)
             }
-            composable<SignInRoute> {
+            dialog<SignInRoute>(
+                dialogProperties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+            ) {
+                // SignInScreen draws its own scrim; drop the platform dim so it isn't doubled.
+                (LocalView.current.parent as? DialogWindowProvider)?.window?.setDimAmount(0f)
                 SignInScreen(
                     onAuthenticated = { destination ->
                         val route = if (destination == PostAuthDestination.HOME) AuthGraphRoute else MedicationSetupRoute
@@ -110,15 +118,12 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                 ) {
                     composable<HomeRoute> {
                         HomeScreen(
+                            onScanMeal = { switchTab(BottomTab.SCAN) },
                             onLogDose = { navController.navigate(LogDoseRoute) },
+                            onSetUpMedication = { navController.navigate(MedicationDoseRoute) },
                             onLogSideEffect = { navController.navigate(LogSideEffectRoute) },
-                            onScanMeal = {
-                                navController.navigate(ScanTabGraphRoute) {
-                                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
+                            onOpenInsights = { switchTab(BottomTab.INSIGHTS) },
+                            onOpenNotifications = { navController.navigate(NotificationsRoute) },
                         )
                     }
                     composable<LogDoseRoute> { LogDoseScreen(onBack = navController::popBackStack) }

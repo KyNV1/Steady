@@ -5,21 +5,29 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.steady.app.data.local.dao.DailyGoalsDao
+import com.steady.app.data.local.dao.DailyIntakeDao
 import com.steady.app.data.local.dao.MedicationProfileDao
 import com.steady.app.data.local.dao.UserDao
 import com.steady.app.data.local.entity.CachedUserEntity
 import com.steady.app.data.local.entity.DailyGoalsEntity
+import com.steady.app.data.local.entity.DailyIntakeEntity
 import com.steady.app.data.local.entity.MedicationProfileEntity
 
 @Database(
-    entities = [CachedUserEntity::class, MedicationProfileEntity::class, DailyGoalsEntity::class],
-    version = 2,
+    entities = [
+        CachedUserEntity::class,
+        MedicationProfileEntity::class,
+        DailyGoalsEntity::class,
+        DailyIntakeEntity::class,
+    ],
+    version = 3,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun medicationProfileDao(): MedicationProfileDao
     abstract fun dailyGoalsDao(): DailyGoalsDao
+    abstract fun dailyIntakeDao(): DailyIntakeDao
 
     companion object {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -39,6 +47,17 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        val MIGRATIONS: Array<Migration> = arrayOf(MIGRATION_1_2)
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `daily_intake` (" +
+                        "`userId` TEXT NOT NULL, `epochDay` INTEGER NOT NULL, `fiberGrams` INTEGER NOT NULL, " +
+                        "`proteinGrams` INTEGER NOT NULL, `waterMilliliters` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`userId`, `epochDay`))",
+                )
+            }
+        }
+
+        val MIGRATIONS: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
     }
 }

@@ -9,14 +9,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Singleton
 class FakeAuthRepository @Inject constructor(private val appDataStore: AppDataStore) : AuthRepository {
     override val isAuthenticated: Flow<Boolean> = appDataStore.isAuthenticated
 
+    override val currentUser: Flow<User?>
+        get() = appDataStore.isAuthenticated.map { signedIn -> if (signedIn) DEMO_USER else null }
+
     override suspend fun login(googleIdToken: String): Result<AuthSession> {
         delay(DEMO_DELAY_MILLIS)
-        return saveDemoSession("demo@example.com", "Demo User")
+        return saveDemoSession()
     }
 
     override suspend fun refreshToken(): Result<String> = runCatching {
@@ -27,14 +31,14 @@ class FakeAuthRepository @Inject constructor(private val appDataStore: AppDataSt
 
     override suspend fun logout() = appDataStore.clearSession()
 
-    private suspend fun saveDemoSession(email: String, displayName: String): Result<AuthSession> = runCatching {
+    private suspend fun saveDemoSession(): Result<AuthSession> = runCatching {
         val token = AuthToken("demo-token", "demo-refresh-token")
-        val user = User("demo-user", email, displayName)
-        appDataStore.saveSession(token.accessToken, token.refreshToken, user.id)
-        AuthSession(user, token)
+        appDataStore.saveSession(token.accessToken, token.refreshToken, DEMO_USER.id)
+        AuthSession(DEMO_USER, token)
     }
 
     companion object {
         private const val DEMO_DELAY_MILLIS = 350L
+        private val DEMO_USER = User("demo-user", "demo@example.com", "Demo User")
     }
 }

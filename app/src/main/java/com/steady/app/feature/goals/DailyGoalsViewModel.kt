@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steady.app.core.storage.AppDataStore
 import com.steady.app.domain.model.DailyGoals
+import com.steady.app.domain.model.ML_PER_FL_OZ
 import com.steady.app.domain.repository.TrackingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val ML_PER_OZ = 29.5735
 private const val RECOMMENDED_FIBER_GRAMS = 25
 private const val RECOMMENDED_PROTEIN_GRAMS = 70
 private const val RECOMMENDED_WATER_OZ = 64
@@ -47,7 +47,7 @@ class DailyGoalsViewModel @Inject constructor(
                 it.copy(
                     fiberGrams = goals.fiberGrams,
                     proteinGrams = goals.proteinGrams,
-                    waterOunces = (goals.waterMilliliters / ML_PER_OZ).roundToInt(),
+                    waterOunces = (goals.waterMilliliters / ML_PER_FL_OZ).roundToInt(),
                     isLoading = false,
                 )
             }
@@ -78,7 +78,7 @@ class DailyGoalsViewModel @Inject constructor(
                 DailyGoals(
                     proteinGrams = current.proteinGrams,
                     fiberGrams = current.fiberGrams,
-                    waterMilliliters = (current.waterOunces * ML_PER_OZ).roundToInt(),
+                    waterMilliliters = (current.waterOunces * ML_PER_FL_OZ).roundToInt(),
                 ),
             )
             mutableState.update { it.copy(isSaved = true) }

@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-/** Round +/- stepper button shared by [GoalStepperCard] and [StatProgressCard]: filled (dark) for
+/** Round +/- stepper button used by [GoalStepperCard]: filled (dark) for
  * increment, outlined (surfaceContainer) for decrement. */
 @Composable
 fun CircleStepperButton(icon: ImageVector, filled: Boolean, onClick: () -> Unit, size: Dp = 32.dp) {

@@ -12,6 +12,7 @@ import com.steady.app.core.storage.AppPreferences
 import com.steady.app.core.storage.AppPreferencesSerializer
 import com.steady.app.core.utils.Constants
 import com.steady.app.data.local.dao.DailyGoalsDao
+import com.steady.app.data.local.dao.DailyIntakeDao
 import com.steady.app.data.local.dao.MedicationProfileDao
 import com.steady.app.data.local.dao.UserDao
 import dagger.Binds
@@ -63,5 +64,8 @@ abstract class DatabaseModule {
 
         @Provides
         fun provideDailyGoalsDao(database: AppDatabase): DailyGoalsDao = database.dailyGoalsDao()
+
+        @Provides
+        fun provideDailyIntakeDao(database: AppDatabase): DailyIntakeDao = database.dailyIntakeDao()
     }
 }

@@ -1,10 +1,12 @@
 package com.steady.app.data.repository
 
 import com.steady.app.data.local.dao.DailyGoalsDao
+import com.steady.app.data.local.dao.DailyIntakeDao
 import com.steady.app.data.local.dao.MedicationProfileDao
 import com.steady.app.data.local.entity.DailyGoalsEntity
 import com.steady.app.data.local.entity.MedicationProfileEntity
 import com.steady.app.domain.model.DailyGoals
+import com.steady.app.domain.model.DailyIntake
 import com.steady.app.domain.model.DailyNutritionTotals
 import com.steady.app.domain.model.DoseLog
 import com.steady.app.domain.model.MealLog
@@ -20,15 +22,33 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Only medication profile + daily goals are wired to Room (Phase 3 needs these for
- * first-run setup routing). Meal/dose/side-effect/progress persistence is Phase 4/5 scope —
- * nothing calls those methods yet, so they stay [TODO] rather than a half-working fake.
+ * Medication profile, daily goals and Home's quick-add daily intake are wired to Room.
+ * Meal/dose/side-effect/progress persistence isn't built yet — nothing calls those methods,
+ * so they stay [TODO] rather than a half-working fake.
  */
 @Singleton
 class TrackingRepositoryImpl @Inject constructor(
     private val medicationProfileDao: MedicationProfileDao,
     private val dailyGoalsDao: DailyGoalsDao,
+    private val dailyIntakeDao: DailyIntakeDao,
 ) : TrackingRepository {
+
+    override fun observeDailyIntake(userId: String, epochDay: Long): Flow<DailyIntake> =
+        dailyIntakeDao.observe(userId, epochDay).map { entity ->
+            entity?.let { DailyIntake(it.epochDay, it.fiberGrams, it.proteinGrams, it.waterMilliliters) }
+                ?: DailyIntake(epochDay)
+        }
+
+    override fun observeIntakeDays(userId: String): Flow<Set<Long>> =
+        dailyIntakeDao.observeActiveDays(userId).map { it.toSet() }
+
+    override suspend fun adjustDailyIntake(
+        userId: String,
+        epochDay: Long,
+        fiberDelta: Int,
+        proteinDelta: Int,
+        waterDeltaMl: Int,
+    ) = dailyIntakeDao.adjust(userId, epochDay, fiberDelta, proteinDelta, waterDeltaMl)
 
     override fun observeMedicationProfile(userId: String): Flow<MedicationProfile?> =
         medicationProfileDao.observeByUserId(userId).map { it?.toDomain() }
