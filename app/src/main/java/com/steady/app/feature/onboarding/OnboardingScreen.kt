@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,8 +47,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -214,7 +217,12 @@ fun OnboardingScreen(
                     containerColor = WelcomeDesignColors.PrimaryContainer,
                 ),
             ) {
-                Text(stringResource(if (isLastPage) R.string.onboarding_get_started else R.string.onboarding_next))
+                Text(
+                    stringResource(if (isLastPage) R.string.onboarding_get_started else R.string.onboarding_next),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Spacer(Modifier.width(Dimens.dp_8))
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, modifier = Modifier.size(Dimens.dp_18))
             }
 
             Row(
@@ -238,13 +246,6 @@ fun OnboardingScreen(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun HeroCard(content: @Composable ColumnScope.() -> Unit) {
-    SteadyCard(modifier = Modifier.fillMaxWidth(), shape = SteadyShapes.hero) {
-        Column(Modifier.padding(LocalAppSpacing.current.medium), content = content)
     }
 }
 
@@ -512,43 +513,146 @@ private fun ScanMealsHero() {
 
 @Composable
 private fun ProgressHero() {
-    HeroCard {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.AutoMirrored.Filled.TrendingDown, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+    val muted = LocalSteadyExtendedColors.current.onSurfaceMuted
+    SteadyCard(modifier = Modifier.fillMaxWidth(), shape = SteadyShapes.hero) {
+        Column(Modifier.padding(Dimens.dp_20)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Text(
-                    stringResource(R.string.onboarding_hero_trend),
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(start = LocalAppSpacing.current.small),
-                )
-            }
-            PremiumBadge()
-        }
-        Spacer(Modifier.height(LocalAppSpacing.current.cardGap))
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(LocalAppSpacing.current.cardGap)) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Default.LocalFireDepartment, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
-                Column(Modifier.padding(start = LocalAppSpacing.current.small)) {
-                    Text("12", style = MaterialTheme.typography.titleLarge)
-                    Text(
-                        stringResource(R.string.onboarding_hero_streak_label),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text("-8 lb", style = MaterialTheme.typography.titleLarge)
-                Text(
-                    stringResource(R.string.onboarding_hero_since_start),
-                    style = MaterialTheme.typography.labelSmall,
+                    stringResource(R.string.onboarding_hero_trend).uppercase(),
+                    style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                PremiumBadge()
             }
+
+            Spacer(Modifier.height(Dimens.dp_16))
+            WeightTrendChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Dimens.dp_6),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text("W1 · 192 lb", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Normal), color = muted)
+                Text("W6", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Normal), color = muted)
+                Text("W12 · 184 lb", style = MaterialTheme.typography.labelSmall, color = WelcomeDesignColors.PrimaryContainer)
+            }
+
+            Spacer(Modifier.height(Dimens.dp_12))
+            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.dp_10)) {
+                ProgressStatTile(
+                    value = "12",
+                    label = stringResource(R.string.onboarding_hero_streak_label),
+                    icon = Icons.Default.LocalFireDepartment,
+                    iconTint = LocalSteadyExtendedColors.current.premiumText,
+                    modifier = Modifier.weight(1f),
+                )
+                ProgressStatTile(
+                    value = "−8 lb",
+                    label = stringResource(R.string.onboarding_hero_since_start),
+                    icon = Icons.AutoMirrored.Filled.TrendingDown,
+                    iconTint = WelcomeDesignColors.PrimaryContainer,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+/** Illustrative 12-week declining weight curve: dashed gridlines, gradient fill, W1/W6/W12 markers. */
+@Composable
+private fun WeightTrendChart(modifier: Modifier = Modifier) {
+    val line = WelcomeDesignColors.PrimaryContainer
+    val grid = MaterialTheme.colorScheme.outline
+    val surface = MaterialTheme.colorScheme.surface
+    Canvas(modifier) {
+        // Geometry follows the Stitch SVG's 300x130 viewBox, stretched to the canvas size.
+        val sx = size.width / 300f
+        val sy = size.height / 130f
+        fun p(x: Float, y: Float) = Offset(x * sx, y * sy)
+
+        val dash = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 3.dp.toPx()))
+        drawLine(grid, p(0f, 20f), p(300f, 20f), 1.dp.toPx(), pathEffect = dash)
+        drawLine(grid, p(0f, 65f), p(300f, 65f), 1.dp.toPx(), pathEffect = dash)
+        drawLine(grid, p(0f, 110f), p(300f, 110f), 1.dp.toPx())
+
+        val curve = Path().apply {
+            moveTo(0f, 28f * sy)
+            cubicTo(45f * sx, 30f * sy, 85f * sx, 50f * sy, 140f * sx, 68f * sy)
+            cubicTo(195f * sx, 84f * sy, 245f * sx, 100f * sy, 300f * sx, 105f * sy)
+        }
+        val area = Path().apply {
+            addPath(curve)
+            lineTo(300f * sx, 110f * sy)
+            lineTo(0f, 110f * sy)
+            close()
+        }
+        drawPath(
+            area,
+            Brush.verticalGradient(
+                0f to line.copy(alpha = 0.18f),
+                0.6f to line.copy(alpha = 0.04f),
+                1f to line.copy(alpha = 0f),
+                endY = 110f * sy,
+            ),
+        )
+        drawPath(curve, line, style = Stroke(width = 2.75.dp.toPx(), cap = StrokeCap.Round))
+
+        val ring = Stroke(width = 2.5.dp.toPx())
+        drawCircle(surface, 4.5.dp.toPx(), p(2f, 28f))
+        drawCircle(line, 4.5.dp.toPx(), p(2f, 28f), style = ring)
+        drawCircle(surface, 4.dp.toPx(), p(140f, 68f))
+        drawCircle(line, 4.dp.toPx(), p(140f, 68f), style = ring)
+        drawCircle(surface, 6.dp.toPx(), p(298f, 105f))
+        drawCircle(line, 5.dp.toPx(), p(298f, 105f))
+    }
+}
+
+@Composable
+private fun ProgressStatTile(
+    value: String,
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconTint: Color,
+    modifier: Modifier = Modifier,
+) {
+    SteadyCard(
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = BorderStroke(Dimens.dp_1, MaterialTheme.colorScheme.outline),
+    ) {
+        Row(
+            modifier = Modifier.padding(Dimens.dp_12),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    value,
+                    style = OnboardingHeadlineStyle.copy(fontSize = 23.sp, lineHeight = 23.sp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    label,
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = Dimens.sp_11),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = Dimens.dp_4),
+                )
+            }
+            IconTile(
+                icon = icon,
+                size = Dimens.dp_32,
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                iconTint = iconTint,
+                iconSize = Dimens.dp_18,
+            )
         }
     }
 }
