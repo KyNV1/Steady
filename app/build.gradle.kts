@@ -24,6 +24,7 @@ val localProperties = Properties().apply {
     }
 }
 val googleWebClientId: String = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID", "")
+val supportEmail: String = localProperties.getProperty("SUPPORT_EMAIL", "")
 
 android {
     namespace = "com.steady.app"
@@ -47,6 +48,9 @@ android {
         // > Google > Web SDK configuration). Set GOOGLE_WEB_CLIENT_ID in local.properties once a
         // real Firebase project exists; empty by default so a fresh clone still builds.
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+        // Help > Contact opens an email to this address. Set SUPPORT_EMAIL in local.properties;
+        // empty by default, in which case the Contact action says support is coming soon.
+        buildConfigField("String", "SUPPORT_EMAIL", "\"$supportEmail\"")
     }
 
     buildTypes {
@@ -112,6 +116,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.androidx.datastore)
+    implementation(libs.androidx.exifinterface)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)

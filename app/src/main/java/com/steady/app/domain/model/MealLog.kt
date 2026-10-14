@@ -10,11 +10,13 @@ data class NutritionEstimate(
 data class MealLog(
     val id: String,
     val userId: String,
-    val localDate: String,
+    /** Local calendar day, same convention as [DailyIntake.epochDay]. */
+    val epochDay: Long,
     val loggedAtEpochMillis: Long,
     val name: String,
     val portionDescription: String,
     val nutrition: NutritionEstimate,
+    /** Null when the values were entered by hand rather than estimated by AI. */
     val confidencePercent: Int?,
     val imageUri: String?,
     val analysisSchemaVersion: Int?,

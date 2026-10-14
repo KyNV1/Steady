@@ -6,14 +6,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.steady.app.ui.theme.AppTheme
 import com.steady.app.ui.theme.LocalAppSpacing
 import com.steady.app.ui.theme.SteadyShapes
@@ -41,28 +52,42 @@ fun <T> PillToggleGroup(options: List<T>, selected: T, onSelect: (T) -> Unit, la
     }
 }
 
-/** Multi-select pill chips (e.g. symptom picker); each chip toggles independently. */
+/**
+ * Multi-select pill chips (e.g. symptom picker): 40dp tall, selected = solid ink with a leading
+ * check so the state isn't conveyed by color alone.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ChipSelector(options: List<String>, selected: Set<String>, onToggle: (String) -> Unit) {
+fun <T> ChipSelector(options: List<T>, selected: Set<T>, onToggle: (T) -> Unit, label: @Composable (T) -> String) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(LocalAppSpacing.current.small),
-        verticalArrangement = Arrangement.spacedBy(LocalAppSpacing.current.small),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         options.forEach { option ->
             val isSelected = option in selected
+            val contentColor = if (isSelected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface
             Surface(
                 shape = SteadyShapes.chip,
                 color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.surface,
                 border = if (isSelected) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                modifier = Modifier.clickable { onToggle(option) },
+                modifier = Modifier
+                    .height(40.dp)
+                    .selectable(selected = isSelected, role = Role.Checkbox, onClick = { onToggle(option) }),
             ) {
-                Text(
-                    option,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (isSelected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(horizontal = LocalAppSpacing.current.medium, vertical = LocalAppSpacing.current.small),
-                )
+                Row(
+                    modifier = Modifier.padding(horizontal = LocalAppSpacing.current.medium),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (isSelected) {
+                        Icon(Icons.Default.Check, contentDescription = null, tint = contentColor, modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(6.dp))
+                    }
+                    Text(
+                        label(option),
+                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
+                        color = contentColor,
+                    )
+                }
             }
         }
     }
@@ -77,5 +102,5 @@ private fun PillToggleGroupPreview() {
 @Preview
 @Composable
 private fun ChipSelectorPreview() {
-    AppTheme { ChipSelector(listOf("Nausea", "Fatigue", "Headache"), setOf("Nausea"), {}) }
+    AppTheme { ChipSelector(listOf("Nausea", "Fatigue", "Headache"), setOf("Nausea"), {}, { it }) }
 }

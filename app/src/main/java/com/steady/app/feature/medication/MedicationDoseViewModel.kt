@@ -7,6 +7,7 @@ import com.steady.app.domain.model.MedicationFrequency
 import com.steady.app.domain.model.MedicationProfile
 import com.steady.app.domain.model.MedicationRoute
 import com.steady.app.domain.repository.TrackingRepository
+import com.steady.app.feature.dose.formatDoseAmount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,9 @@ data class MedicationDoseUiState(
     val frequency: MedicationFrequency = MedicationFrequency.WEEKLY,
     val isLoading: Boolean = true,
     val isSaved: Boolean = false,
-)
+) {
+    val canSave: Boolean get() = name.isNotBlank() && parseDoseAmount(doseAmount) != null
+}
 
 @HiltViewModel
 class MedicationDoseViewModel @Inject constructor(
@@ -43,7 +46,7 @@ class MedicationDoseViewModel @Inject constructor(
                     it.copy(
                         route = existing.route,
                         name = existing.name,
-                        doseAmount = formatAmount(existing.doseAmount),
+                        doseAmount = formatDoseAmount(existing.doseAmount),
                         doseUnit = existing.doseUnit,
                         frequency = existing.frequency,
                         isLoading = false,
@@ -62,15 +65,15 @@ class MedicationDoseViewModel @Inject constructor(
 
     fun save(onSaved: () -> Unit) {
         val current = mutableState.value
-        val amount = current.doseAmount.toDoubleOrNull() ?: return
-        if (current.name.isBlank()) return
+        if (!current.canSave || current.isSaved) return
+        val amount = parseDoseAmount(current.doseAmount) ?: return
         viewModelScope.launch {
             val userId = appDataStore.preferences.first().userId
             trackingRepository.saveMedicationProfile(
                 MedicationProfile(
                     userId = userId,
                     route = current.route,
-                    name = current.name,
+                    name = current.name.trim(),
                     doseAmount = amount,
                     doseUnit = current.doseUnit,
                     frequency = current.frequency,
@@ -81,7 +84,4 @@ class MedicationDoseViewModel @Inject constructor(
             onSaved()
         }
     }
-
-    private fun formatAmount(amount: Double): String =
-        if (amount == amount.toLong().toDouble()) amount.toLong().toString() else amount.toString()
 }

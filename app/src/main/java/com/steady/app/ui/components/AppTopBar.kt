@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,10 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.steady.app.ui.theme.LocalAppSpacing
 
-/** Screen-level top bar: 34dp bordered back button, 15sp/600 title, optional trailing slot. */
+/** Screen-level top bar: 34dp bordered back button, centered 16sp/600 title, optional trailing slot. */
 @Composable
 fun AppTopBar(
     title: String,
@@ -47,17 +50,21 @@ fun AppTopBar(
                 modifier = Modifier.size(34.dp),
             ) {
                 IconButton(onClick = onBack, modifier = Modifier.semantics { contentDescription = backContentDescription }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    Icon(Icons.Default.ChevronLeft, contentDescription = null, modifier = Modifier.size(20.dp))
                 }
             }
         } else {
             Box(Modifier.size(34.dp))
         }
 
+        // Equal 34dp slots either side keep the title optically centered, as in the Stitch screens.
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = LocalAppSpacing.current.small),

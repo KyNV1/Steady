@@ -14,16 +14,22 @@ import com.steady.app.MainActivity
 import com.steady.app.R
 import com.steady.app.core.storage.AppDataStore
 import com.steady.app.core.utils.Constants
+import com.steady.app.domain.model.AppNotification
+import com.steady.app.domain.model.NotificationType
+import com.steady.app.domain.repository.NotificationRepository
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
 class AppFirebaseMessagingService : FirebaseMessagingService() {
     @Inject lateinit var appDataStore: AppDataStore
+    @Inject lateinit var notificationRepository: NotificationRepository
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun onNewToken(token: String) {
@@ -35,6 +41,7 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
         val title = message.notification?.title ?: getString(R.string.app_name)
         val body = message.notification?.body ?: message.data["message"].orEmpty()
         if (body.isBlank()) return
+        saveToInbox(message, title, body)
 
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -59,6 +66,27 @@ class AppFirebaseMessagingService : FirebaseMessagingService() {
             NotificationManagerCompat.from(this).notify(message.messageId?.hashCode() ?: 1, notification)
         } else {
             Timber.d("Notification permission not granted")
+        }
+    }
+
+    /** Mirrors each push into the in-app inbox so it's still there after the system tray is cleared. */
+    private fun saveToInbox(message: RemoteMessage, title: String, body: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val userId = appDataStore.preferences.first().userId
+            if (userId.isBlank()) return@launch
+            notificationRepository.add(
+                listOf(
+                    AppNotification(
+                        id = message.messageId ?: UUID.randomUUID().toString(),
+                        userId = userId,
+                        type = NotificationType.fromKey(message.data["type"]),
+                        title = title,
+                        body = body,
+                        createdAtEpochMillis = message.sentTime.takeIf { it > 0 } ?: System.currentTimeMillis(),
+                        readAtEpochMillis = null,
+                    ),
+                ),
+            )
         }
     }
 }

@@ -19,16 +19,27 @@ import kotlinx.coroutines.launch
 private const val RECOMMENDED_FIBER_GRAMS = 25
 private const val RECOMMENDED_PROTEIN_GRAMS = 70
 private const val RECOMMENDED_WATER_OZ = 64
-private const val FIBER_STEP = 5
-private const val PROTEIN_STEP = 5
-private const val WATER_STEP_OZ = 8
+
+/** Step size and allowed range for one goal's stepper. */
+data class GoalRange(val step: Int, val min: Int, val max: Int) {
+    fun canDecrement(value: Int) = value > min
+    fun canIncrement(value: Int) = value < max
+
+    /** Moves one step toward the bound; a value already outside the range only moves back inside. */
+    fun decrement(value: Int) = if (canDecrement(value)) (value - step).coerceIn(min, max) else value
+    fun increment(value: Int) = if (canIncrement(value)) (value + step).coerceIn(min, max) else value
+}
+
+val FIBER_RANGE = GoalRange(step = 1, min = 10, max = 60)
+val PROTEIN_RANGE = GoalRange(step = 5, min = 30, max = 180)
+val WATER_OZ_RANGE = GoalRange(step = 4, min = 32, max = 160)
 
 data class DailyGoalsUiState(
     val fiberGrams: Int = RECOMMENDED_FIBER_GRAMS,
     val proteinGrams: Int = RECOMMENDED_PROTEIN_GRAMS,
     val waterOunces: Int = RECOMMENDED_WATER_OZ,
     val isLoading: Boolean = true,
-    val isSaved: Boolean = false,
+    val isSaving: Boolean = false,
 )
 
 @HiltViewModel
@@ -54,12 +65,12 @@ class DailyGoalsViewModel @Inject constructor(
         }
     }
 
-    fun incrementFiber() = mutableState.update { it.copy(fiberGrams = it.fiberGrams + FIBER_STEP) }
-    fun decrementFiber() = mutableState.update { it.copy(fiberGrams = (it.fiberGrams - FIBER_STEP).coerceAtLeast(0)) }
-    fun incrementProtein() = mutableState.update { it.copy(proteinGrams = it.proteinGrams + PROTEIN_STEP) }
-    fun decrementProtein() = mutableState.update { it.copy(proteinGrams = (it.proteinGrams - PROTEIN_STEP).coerceAtLeast(0)) }
-    fun incrementWater() = mutableState.update { it.copy(waterOunces = it.waterOunces + WATER_STEP_OZ) }
-    fun decrementWater() = mutableState.update { it.copy(waterOunces = (it.waterOunces - WATER_STEP_OZ).coerceAtLeast(0)) }
+    fun incrementFiber() = mutableState.update { it.copy(fiberGrams = FIBER_RANGE.increment(it.fiberGrams)) }
+    fun decrementFiber() = mutableState.update { it.copy(fiberGrams = FIBER_RANGE.decrement(it.fiberGrams)) }
+    fun incrementProtein() = mutableState.update { it.copy(proteinGrams = PROTEIN_RANGE.increment(it.proteinGrams)) }
+    fun decrementProtein() = mutableState.update { it.copy(proteinGrams = PROTEIN_RANGE.decrement(it.proteinGrams)) }
+    fun incrementWater() = mutableState.update { it.copy(waterOunces = WATER_OZ_RANGE.increment(it.waterOunces)) }
+    fun decrementWater() = mutableState.update { it.copy(waterOunces = WATER_OZ_RANGE.decrement(it.waterOunces)) }
 
     fun resetToRecommended() = mutableState.update {
         it.copy(
@@ -71,6 +82,8 @@ class DailyGoalsViewModel @Inject constructor(
 
     fun save(onSaved: () -> Unit) {
         val current = mutableState.value
+        if (current.isSaving) return
+        mutableState.update { it.copy(isSaving = true) }
         viewModelScope.launch {
             val userId = appDataStore.preferences.first().userId
             trackingRepository.saveDailyGoals(
@@ -81,7 +94,6 @@ class DailyGoalsViewModel @Inject constructor(
                     waterMilliliters = (current.waterOunces * ML_PER_FL_OZ).roundToInt(),
                 ),
             )
-            mutableState.update { it.copy(isSaved = true) }
             onSaved()
         }
     }

@@ -1,20 +1,32 @@
 package com.steady.app.data.repository
 
+import androidx.room.withTransaction
+import com.steady.app.core.storage.AppDatabase
 import com.steady.app.data.local.dao.DailyGoalsDao
+import com.steady.app.data.local.dao.MealLogDao
+import com.steady.app.data.local.entity.MealLogEntity
+import com.steady.app.domain.model.NutritionEstimate
+import kotlin.math.roundToInt
 import com.steady.app.data.local.dao.DailyIntakeDao
+import com.steady.app.data.local.dao.DoseLogDao
 import com.steady.app.data.local.dao.MedicationProfileDao
+import com.steady.app.data.local.dao.SideEffectLogDao
 import com.steady.app.data.local.entity.DailyGoalsEntity
+import com.steady.app.data.local.entity.DoseLogEntity
 import com.steady.app.data.local.entity.MedicationProfileEntity
+import com.steady.app.data.local.entity.SideEffectLogEntity
 import com.steady.app.domain.model.DailyGoals
 import com.steady.app.domain.model.DailyIntake
 import com.steady.app.domain.model.DailyNutritionTotals
 import com.steady.app.domain.model.DoseLog
+import com.steady.app.domain.model.InjectionSite
 import com.steady.app.domain.model.MealLog
 import com.steady.app.domain.model.MedicationFrequency
 import com.steady.app.domain.model.MedicationProfile
 import com.steady.app.domain.model.MedicationRoute
 import com.steady.app.domain.model.ProgressEntry
 import com.steady.app.domain.model.SideEffectLog
+import com.steady.app.domain.model.SideEffectSeverity
 import com.steady.app.domain.repository.TrackingRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,21 +34,30 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Medication profile, daily goals and Home's quick-add daily intake are wired to Room.
- * Meal/dose/side-effect/progress persistence isn't built yet — nothing calls those methods,
+ * Medication profile, daily goals, quick-add daily intake, meal, dose and side-effect logs are wired
+ * to Room. Daily nutrition totals and progress aren't built yet — nothing calls those methods,
  * so they stay [TODO] rather than a half-working fake.
  */
 @Singleton
 class TrackingRepositoryImpl @Inject constructor(
+    private val database: AppDatabase,
+    private val mealLogDao: MealLogDao,
     private val medicationProfileDao: MedicationProfileDao,
     private val dailyGoalsDao: DailyGoalsDao,
     private val dailyIntakeDao: DailyIntakeDao,
+    private val sideEffectLogDao: SideEffectLogDao,
+    private val doseLogDao: DoseLogDao,
 ) : TrackingRepository {
 
     override fun observeDailyIntake(userId: String, epochDay: Long): Flow<DailyIntake> =
         dailyIntakeDao.observe(userId, epochDay).map { entity ->
             entity?.let { DailyIntake(it.epochDay, it.fiberGrams, it.proteinGrams, it.waterMilliliters) }
                 ?: DailyIntake(epochDay)
+        }
+
+    override fun observeDailyIntakeRange(userId: String, fromEpochDay: Long, toEpochDay: Long): Flow<List<DailyIntake>> =
+        dailyIntakeDao.observeRange(userId, fromEpochDay, toEpochDay).map { rows ->
+            rows.map { DailyIntake(it.epochDay, it.fiberGrams, it.proteinGrams, it.waterMilliliters) }
         }
 
     override fun observeIntakeDays(userId: String): Flow<Set<Long>> =
@@ -68,34 +89,45 @@ class TrackingRepositoryImpl @Inject constructor(
         TODO("Phase 5 — meal logging isn't built yet, no caller exists")
 
     override fun observeMeals(userId: String, fromEpochMillis: Long, toEpochMillis: Long): Flow<List<MealLog>> =
-        TODO("Phase 5 — meal logging isn't built yet, no caller exists")
+        mealLogDao.observeRange(userId, fromEpochMillis, toEpochMillis).map { rows -> rows.map { it.toDomain() } }
 
     override fun observeDoseLogs(userId: String): Flow<List<DoseLog>> =
-        TODO("Phase 4 — dose logging isn't built yet, no caller exists")
+        doseLogDao.observeForUser(userId).map { rows -> rows.map { it.toDomain() } }
 
     override fun observeSideEffects(
         userId: String,
         fromEpochMillis: Long,
         toEpochMillis: Long,
-    ): Flow<List<SideEffectLog>> = TODO("Phase 4 — side-effect logging isn't built yet, no caller exists")
+    ): Flow<List<SideEffectLog>> =
+        sideEffectLogDao.observeRange(userId, fromEpochMillis, toEpochMillis).map { rows -> rows.map { it.toDomain() } }
 
     override fun observeProgress(userId: String): Flow<List<ProgressEntry>> =
         TODO("Phase 6 — Journey progress isn't built yet, no caller exists")
 
-    override suspend fun saveMeal(meal: MealLog): Unit =
-        TODO("Phase 5 — meal logging isn't built yet, no caller exists")
+    /** Stores the meal and adds its protein/fiber to that day's Home totals in one transaction. */
+    override suspend fun saveMeal(meal: MealLog) {
+        database.withTransaction {
+            val inserted = mealLogDao.insert(meal.toEntity()) != -1L
+            if (inserted) {
+                dailyIntakeDao.adjust(
+                    userId = meal.userId,
+                    epochDay = meal.epochDay,
+                    fiberDelta = meal.nutrition.fiberGrams.roundToInt(),
+                    proteinDelta = meal.nutrition.proteinGrams.roundToInt(),
+                    waterDeltaMl = 0,
+                )
+            }
+        }
+    }
 
-    override suspend fun saveDose(dose: DoseLog): Unit =
-        TODO("Phase 4 — dose logging isn't built yet, no caller exists")
+    override suspend fun saveDose(dose: DoseLog) = doseLogDao.upsert(dose.toEntity())
 
-    override suspend fun saveSideEffect(log: SideEffectLog): Unit =
-        TODO("Phase 4 — side-effect logging isn't built yet, no caller exists")
+    override suspend fun saveSideEffect(log: SideEffectLog) = sideEffectLogDao.upsert(log.toEntity())
 
     override suspend fun saveProgress(entry: ProgressEntry): Unit =
         TODO("Phase 6 — Journey progress isn't built yet, no caller exists")
 
-    override suspend fun clearUserData(userId: String): Unit =
-        TODO("Phase 7 — account deletion orchestration isn't built yet, no caller exists")
+    override suspend fun clearUserData(userId: String) = database.userDataDao().clearAll(userId)
 
     companion object {
         val RECOMMENDED_DEFAULT_GOALS = DailyGoals(proteinGrams = 70, fiberGrams = 25, waterMilliliters = 1893)
@@ -133,4 +165,77 @@ private fun DailyGoals.toEntity(userId: String) = DailyGoalsEntity(
     proteinGrams = proteinGrams,
     fiberGrams = fiberGrams,
     waterMilliliters = waterMilliliters,
+)
+
+private fun MealLogEntity.toDomain() = MealLog(
+    id = id,
+    userId = userId,
+    epochDay = epochDay,
+    loggedAtEpochMillis = loggedAtEpochMillis,
+    name = name,
+    portionDescription = portionDescription,
+    nutrition = NutritionEstimate(calories, proteinGrams, fiberGrams, carbsGrams),
+    confidencePercent = confidencePercent,
+    imageUri = imageUri,
+    analysisSchemaVersion = analysisSchemaVersion,
+    analysisModel = analysisModel,
+)
+
+private fun MealLog.toEntity() = MealLogEntity(
+    id = id,
+    userId = userId,
+    epochDay = epochDay,
+    loggedAtEpochMillis = loggedAtEpochMillis,
+    name = name,
+    portionDescription = portionDescription,
+    calories = nutrition.calories,
+    proteinGrams = nutrition.proteinGrams,
+    fiberGrams = nutrition.fiberGrams,
+    carbsGrams = nutrition.carbsGrams,
+    confidencePercent = confidencePercent,
+    imageUri = imageUri,
+    analysisSchemaVersion = analysisSchemaVersion,
+    analysisModel = analysisModel,
+)
+
+private fun DoseLogEntity.toDomain() = DoseLog(
+    id = id,
+    userId = userId,
+    medicationName = medicationName,
+    doseAmount = doseAmount,
+    doseUnit = doseUnit,
+    takenAtEpochMillis = takenAtEpochMillis,
+    injectionSite = injectionSite?.let { site -> InjectionSite.entries.firstOrNull { it.name == site } },
+    note = note,
+)
+
+private fun DoseLog.toEntity() = DoseLogEntity(
+    id = id,
+    userId = userId,
+    medicationName = medicationName,
+    doseAmount = doseAmount,
+    doseUnit = doseUnit,
+    takenAtEpochMillis = takenAtEpochMillis,
+    injectionSite = injectionSite?.name,
+    note = note?.takeIf { it.isNotBlank() },
+)
+
+private fun SideEffectLogEntity.toDomain() = SideEffectLog(
+    id = id,
+    userId = userId,
+    epochDay = epochDay,
+    recordedAtEpochMillis = recordedAtEpochMillis,
+    symptoms = symptoms.split(',').filter { it.isNotBlank() }.toSet(),
+    severity = SideEffectSeverity.valueOf(severity),
+    note = note,
+)
+
+private fun SideEffectLog.toEntity() = SideEffectLogEntity(
+    id = id,
+    userId = userId,
+    epochDay = epochDay,
+    recordedAtEpochMillis = recordedAtEpochMillis,
+    symptoms = symptoms.sorted().joinToString(","),
+    severity = severity.name,
+    note = note?.takeIf { it.isNotBlank() },
 )

@@ -45,9 +45,30 @@ class DailyGoalsViewModelTest {
         vm.incrementWater()
 
         val state = vm.state.value
-        assertEquals(30, state.fiberGrams)
+        assertEquals(26, state.fiberGrams)
         assertEquals(65, state.proteinGrams)
-        assertEquals(72, state.waterOunces)
+        assertEquals(68, state.waterOunces)
+    }
+
+    @Test
+    fun `steppers stop at their bounds`() = runTest {
+        val vm = viewModel(DailyGoals(proteinGrams = 180, fiberGrams = 10, waterMilliliters = 946))
+
+        vm.incrementProtein()
+        vm.decrementFiber()
+        vm.decrementWater()
+
+        val state = vm.state.value
+        assertEquals(180, state.proteinGrams)
+        assertEquals(10, state.fiberGrams)
+        assertEquals(32, state.waterOunces)
+    }
+
+    @Test
+    fun `out-of-range saved value moves back inside instead of jumping past`() {
+        assertEquals(30, PROTEIN_RANGE.increment(20))
+        assertEquals(20, PROTEIN_RANGE.decrement(20))
+        assertEquals(180, PROTEIN_RANGE.decrement(200))
     }
 
     @Test

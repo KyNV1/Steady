@@ -20,6 +20,7 @@ interface TrackingRepository {
     fun observeProgress(userId: String): Flow<List<ProgressEntry>>
     fun observeDailyIntake(userId: String, epochDay: Long): Flow<DailyIntake>
     fun observeIntakeDays(userId: String): Flow<Set<Long>>
+    fun observeDailyIntakeRange(userId: String, fromEpochDay: Long, toEpochDay: Long): Flow<List<DailyIntake>>
 
     suspend fun adjustDailyIntake(userId: String, epochDay: Long, fiberDelta: Int, proteinDelta: Int, waterDeltaMl: Int)
 

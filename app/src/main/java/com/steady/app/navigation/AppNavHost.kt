@@ -62,7 +62,8 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
     Scaffold(
         bottomBar = {
-            if (currentTab != null) {
+            // The scan flow (camera → result) is full-screen; it exits via its own back button.
+            if (currentTab != null && currentTab != BottomTab.SCAN) {
                 SteadyBottomBar(selected = currentTab, onSelect = switchTab)
             }
         },
@@ -126,18 +127,34 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                             onOpenNotifications = { navController.navigate(NotificationsRoute) },
                         )
                     }
-                    composable<LogDoseRoute> { LogDoseScreen(onBack = navController::popBackStack) }
-                    composable<LogSideEffectRoute> { LogSideEffectScreen(onBack = navController::popBackStack) }
                 }
 
                 navigation<ScanTabGraphRoute>(startDestination = ScanRoute) {
-                    composable<ScanRoute> { ScanScreen() }
-                    composable<MealDetectedRoute> { MealDetectedScreen(onBack = navController::popBackStack) }
+                    composable<ScanRoute> {
+                        ScanScreen(
+                            onBack = { switchTab(BottomTab.HOME) },
+                            onMealCaptured = { uri -> navController.navigate(MealDetectedRoute(uri)) },
+                        )
+                    }
+                    composable<MealDetectedRoute> {
+                        MealDetectedScreen(
+                            onBack = navController::popBackStack,
+                            onRetake = navController::popBackStack,
+                            onLogged = {
+                                // Leave the scan tab reset to the camera, then show the updated totals on Home.
+                                navController.popBackStack<ScanRoute>(inclusive = false)
+                                switchTab(BottomTab.HOME)
+                            },
+                        )
+                    }
                 }
 
                 navigation<InsightsTabGraphRoute>(startDestination = InsightsRoute) {
                     composable<InsightsRoute> {
-                        InsightsScreen(onOpenJourney = { navController.navigate(JourneyRoute) })
+                        InsightsScreen(
+                            onOpenJourney = { navController.navigate(JourneyRoute) },
+                            onOpenNotifications = { navController.navigate(NotificationsRoute) },
+                        )
                     }
                     composable<JourneyRoute> {
                         JourneyScreen(
@@ -164,17 +181,38 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
                             onOpenNotifications = { navController.navigate(NotificationsRoute) },
                             onOpenAccount = { navController.navigate(AccountRoute) },
                             onOpenHelp = { navController.navigate(HelpRoute) },
+                            onOpenSubscription = { navController.navigate(PremiumPaywallRoute) },
+                            onLogDose = { navController.navigate(LogDoseRoute) },
                         )
                     }
                     composable<MedicationDoseRoute> { MedicationDoseScreen(onBack = navController::popBackStack) }
                     composable<DailyGoalsRoute> { DailyGoalsScreen(onBack = navController::popBackStack) }
-                    composable<NotificationsRoute> { NotificationsScreen(onBack = navController::popBackStack) }
-                    composable<AccountRoute> { AccountScreen(onBack = navController::popBackStack) }
+                    composable<AccountRoute> {
+                        AccountScreen(
+                            onBack = navController::popBackStack,
+                            onSignedOut = {
+                                navController.navigate(SignInRoute) {
+                                    popUpTo<AuthGraphRoute> { inclusive = true }
+                                }
+                            },
+                        )
+                    }
                     composable<HelpRoute> { HelpScreen(onBack = navController::popBackStack) }
                 }
             }
 
             composable<PremiumPaywallRoute> { PremiumPaywallScreen(onBack = navController::popBackStack) }
+            // Top-level (not inside a tab graph): full-screen flows shown without the tab bar.
+            composable<NotificationsRoute> { NotificationsScreen(onBack = navController::popBackStack) }
+            composable<LogSideEffectRoute> { LogSideEffectScreen(onBack = navController::popBackStack) }
+            composable<LogDoseRoute> {
+                LogDoseScreen(
+                    onBack = navController::popBackStack,
+                    onSetUpMedication = {
+                        navController.navigate(MedicationDoseRoute) { popUpTo<LogDoseRoute> { inclusive = true } }
+                    },
+                )
+            }
         }
     }
 }

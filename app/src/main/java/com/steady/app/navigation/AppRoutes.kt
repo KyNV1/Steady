@@ -19,7 +19,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object ScanTabGraphRoute
 @Serializable data object ScanRoute
-@Serializable data object MealDetectedRoute
+/** [photoUri] is a file:// (camera capture) or content:// (photo picker) Uri string. */
+@Serializable data class MealDetectedRoute(val photoUri: String)
 
 @Serializable data object InsightsTabGraphRoute
 @Serializable data object InsightsRoute

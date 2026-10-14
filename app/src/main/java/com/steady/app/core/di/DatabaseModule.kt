@@ -13,7 +13,11 @@ import com.steady.app.core.storage.AppPreferencesSerializer
 import com.steady.app.core.utils.Constants
 import com.steady.app.data.local.dao.DailyGoalsDao
 import com.steady.app.data.local.dao.DailyIntakeDao
+import com.steady.app.data.local.dao.DoseLogDao
+import com.steady.app.data.local.dao.MealLogDao
 import com.steady.app.data.local.dao.MedicationProfileDao
+import com.steady.app.data.local.dao.NotificationDao
+import com.steady.app.data.local.dao.SideEffectLogDao
 import com.steady.app.data.local.dao.UserDao
 import dagger.Binds
 import dagger.Module
@@ -67,5 +71,17 @@ abstract class DatabaseModule {
 
         @Provides
         fun provideDailyIntakeDao(database: AppDatabase): DailyIntakeDao = database.dailyIntakeDao()
+
+        @Provides
+        fun provideNotificationDao(database: AppDatabase): NotificationDao = database.notificationDao()
+
+        @Provides
+        fun provideSideEffectLogDao(database: AppDatabase): SideEffectLogDao = database.sideEffectLogDao()
+
+        @Provides
+        fun provideDoseLogDao(database: AppDatabase): DoseLogDao = database.doseLogDao()
+
+        @Provides
+        fun provideMealLogDao(database: AppDatabase): MealLogDao = database.mealLogDao()
     }
 }

@@ -28,9 +28,13 @@ class TrackingRepositoryImplTest {
             .allowMainThreadQueries()
             .build()
         repository = TrackingRepositoryImpl(
+            database,
+            database.mealLogDao(),
             database.medicationProfileDao(),
             database.dailyGoalsDao(),
             database.dailyIntakeDao(),
+            database.sideEffectLogDao(),
+            database.doseLogDao(),
         )
     }
 
