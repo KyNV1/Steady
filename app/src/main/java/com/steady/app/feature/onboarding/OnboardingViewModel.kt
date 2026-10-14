@@ -9,7 +9,12 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(private val appDataStore: AppDataStore) : ViewModel() {
+    private var completing = false
+
+    /** Runs [onDone] once even if Skip / Get started / Sign in are tapped repeatedly or together. */
     fun markCompleted(onDone: () -> Unit) {
+        if (completing) return
+        completing = true
         viewModelScope.launch {
             appDataStore.setOnboardingCompleted()
             onDone()

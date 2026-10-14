@@ -21,7 +21,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -36,16 +35,15 @@ import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -103,12 +101,12 @@ fun OnboardingScreen(
                 .padding(padding)
                 .padding(horizontal = LocalAppSpacing.current.screenPadding),
         ) {
-            Row(
+            // Fixed-height header so the pager doesn't shift when the logo hides after the first page.
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(Dimens.dp_56),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                contentAlignment = Alignment.CenterStart,
             ) {
                 if (pagerState.currentPage == 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -131,24 +129,6 @@ fun OnboardingScreen(
                             modifier = Modifier.padding(start = LocalAppSpacing.current.small),
                         )
                     }
-                } else {
-                    IconButton(onClick = {
-                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) }
-                    }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
-                }
-
-                if (!isLastPage) {
-                    TextButton(onClick = { viewModel.markCompleted(onFinished) }) {
-                        Text(
-                            stringResource(R.string.onboarding_skip),
-                            style = MaterialTheme.typography.labelLarge.copy(fontSize = Dimens.sp_14),
-                            color = WelcomeDesignColors.OnSurfaceVariant,
-                        )
-                    }
-                } else {
-                    Spacer(Modifier.size(Dimens.dp_1))
                 }
             }
 
@@ -206,7 +186,8 @@ fun OnboardingScreen(
                     if (isLastPage) {
                         viewModel.markCompleted(onFinished)
                     } else {
-                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                        // targetPage (not currentPage) so rapid taps during the animation keep stepping.
+                        scope.launch { pagerState.animateScrollToPage((pagerState.targetPage + 1).coerceAtMost(pages.lastIndex)) }
                     }
                 },
                 modifier = Modifier
@@ -573,47 +554,51 @@ private fun WeightTrendChart(modifier: Modifier = Modifier) {
     val line = WelcomeDesignColors.PrimaryContainer
     val grid = MaterialTheme.colorScheme.outline
     val surface = MaterialTheme.colorScheme.surface
-    Canvas(modifier) {
-        // Geometry follows the Stitch SVG's 300x130 viewBox, stretched to the canvas size.
-        val sx = size.width / 300f
-        val sy = size.height / 130f
-        fun p(x: Float, y: Float) = Offset(x * sx, y * sy)
+    // drawWithCache builds the paths, gradient and strokes once per size instead of on every draw.
+    Spacer(
+        modifier.drawWithCache {
+            // Geometry follows the Stitch SVG's 300x130 viewBox, stretched to the canvas size.
+            val sx = size.width / 300f
+            val sy = size.height / 130f
+            fun p(x: Float, y: Float) = Offset(x * sx, y * sy)
 
-        val dash = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 3.dp.toPx()))
-        drawLine(grid, p(0f, 20f), p(300f, 20f), 1.dp.toPx(), pathEffect = dash)
-        drawLine(grid, p(0f, 65f), p(300f, 65f), 1.dp.toPx(), pathEffect = dash)
-        drawLine(grid, p(0f, 110f), p(300f, 110f), 1.dp.toPx())
-
-        val curve = Path().apply {
-            moveTo(0f, 28f * sy)
-            cubicTo(45f * sx, 30f * sy, 85f * sx, 50f * sy, 140f * sx, 68f * sy)
-            cubicTo(195f * sx, 84f * sy, 245f * sx, 100f * sy, 300f * sx, 105f * sy)
-        }
-        val area = Path().apply {
-            addPath(curve)
-            lineTo(300f * sx, 110f * sy)
-            lineTo(0f, 110f * sy)
-            close()
-        }
-        drawPath(
-            area,
-            Brush.verticalGradient(
+            val dash = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 3.dp.toPx()))
+            val gridWidth = 1.dp.toPx()
+            val curve = Path().apply {
+                moveTo(0f, 28f * sy)
+                cubicTo(45f * sx, 30f * sy, 85f * sx, 50f * sy, 140f * sx, 68f * sy)
+                cubicTo(195f * sx, 84f * sy, 245f * sx, 100f * sy, 300f * sx, 105f * sy)
+            }
+            val area = Path().apply {
+                addPath(curve)
+                lineTo(300f * sx, 110f * sy)
+                lineTo(0f, 110f * sy)
+                close()
+            }
+            val fill = Brush.verticalGradient(
                 0f to line.copy(alpha = 0.18f),
                 0.6f to line.copy(alpha = 0.04f),
                 1f to line.copy(alpha = 0f),
                 endY = 110f * sy,
-            ),
-        )
-        drawPath(curve, line, style = Stroke(width = 2.75.dp.toPx(), cap = StrokeCap.Round))
+            )
+            val curveStroke = Stroke(width = 2.75.dp.toPx(), cap = StrokeCap.Round)
+            val ring = Stroke(width = 2.5.dp.toPx())
 
-        val ring = Stroke(width = 2.5.dp.toPx())
-        drawCircle(surface, 4.5.dp.toPx(), p(2f, 28f))
-        drawCircle(line, 4.5.dp.toPx(), p(2f, 28f), style = ring)
-        drawCircle(surface, 4.dp.toPx(), p(140f, 68f))
-        drawCircle(line, 4.dp.toPx(), p(140f, 68f), style = ring)
-        drawCircle(surface, 6.dp.toPx(), p(298f, 105f))
-        drawCircle(line, 5.dp.toPx(), p(298f, 105f))
-    }
+            onDrawBehind {
+                drawLine(grid, p(0f, 20f), p(300f, 20f), gridWidth, pathEffect = dash)
+                drawLine(grid, p(0f, 65f), p(300f, 65f), gridWidth, pathEffect = dash)
+                drawLine(grid, p(0f, 110f), p(300f, 110f), gridWidth)
+                drawPath(area, fill)
+                drawPath(curve, line, style = curveStroke)
+                drawCircle(surface, 4.5.dp.toPx(), p(2f, 28f))
+                drawCircle(line, 4.5.dp.toPx(), p(2f, 28f), style = ring)
+                drawCircle(surface, 4.dp.toPx(), p(140f, 68f))
+                drawCircle(line, 4.dp.toPx(), p(140f, 68f), style = ring)
+                drawCircle(surface, 6.dp.toPx(), p(298f, 105f))
+                drawCircle(line, 5.dp.toPx(), p(298f, 105f))
+            }
+        },
+    )
 }
 
 @Composable
